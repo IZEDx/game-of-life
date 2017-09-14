@@ -1,9 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
-    "module": "es6",
-    "moduleResolution": "node",
+    "module": "amd",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
