@@ -5,7 +5,7 @@ define(["require", "exports"], function (require, exports) {
         function Game(field) {
             this.generation = 0;
             this.field = field;
-            this.survive = [2, 3];
+            this.survive = [0, 1, 2, 3, 4, 5, 6, 7, 8];
             this.revive = [3];
         }
         Game.prototype.setRules = function (survive, revive) {
