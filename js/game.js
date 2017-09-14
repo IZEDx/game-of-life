@@ -5,19 +5,24 @@ define(["require", "exports"], function (require, exports) {
         function Game(field) {
             this.generation = 0;
             this.field = field;
+            this.survive = [2, 3];
+            this.revive = [3];
         }
+        Game.prototype.setRules = function (survive, revive) {
+            this.survive = survive;
+            this.revive = revive;
+        };
         Game.prototype.next = function () {
             var _this = this;
             this.generation++;
             var cellsToToggle = [];
             this.field.forEachAlive(function (pos) {
                 var c = _this.field.countAliveNeighbours(pos);
-                if (c < 2 || c > 3) {
+                if (_this.survive.indexOf(c) == -1)
                     cellsToToggle.push(pos);
-                }
                 _this.field.getNeighbours(pos).filter(function (nb) { return !_this.field.isAlive(nb); }).forEach(function (nb) {
                     var nbc = _this.field.countAliveNeighbours(nb);
-                    if (nbc == 3)
+                    if (_this.revive.indexOf(nbc) != -1)
                         cellsToToggle.push(nb);
                 });
             });
