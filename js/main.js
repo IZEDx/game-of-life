@@ -30,7 +30,7 @@ define(["require", "exports", "field", "game"], function (require, exports, fiel
             startStopButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
         }
         else {
-            game.start(50);
+            game.start(100);
             startStopButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
         }
     };
