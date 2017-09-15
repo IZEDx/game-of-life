@@ -4,8 +4,10 @@ define(["require", "exports"], function (require, exports) {
     var Game = (function () {
         function Game(field) {
             this.generation = 0;
+            this.population = 0;
+            this.stateChange = function (generation, population) { };
             this.field = field;
-            this.survive = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            this.survive = [2, 3];
             this.revive = [3];
         }
         Game.prototype.setRules = function (survive, revive) {
@@ -16,8 +18,10 @@ define(["require", "exports"], function (require, exports) {
             var _this = this;
             this.generation++;
             var cellsToToggle = [];
+            var pop = 0;
             this.field.forEachAlive(function (pos) {
                 var c = _this.field.countAliveNeighbours(pos);
+                pop++;
                 if (_this.survive.indexOf(c) == -1)
                     cellsToToggle.push(pos);
                 _this.field.getNeighbours(pos).filter(function (nb) { return !_this.field.isAlive(nb); }).forEach(function (nb) {
@@ -26,6 +30,8 @@ define(["require", "exports"], function (require, exports) {
                         cellsToToggle.push(nb);
                 });
             });
+            this.population = pop;
+            this.stateChange(this.generation, this.population);
             for (var _i = 0, cellsToToggle_1 = cellsToToggle; _i < cellsToToggle_1.length; _i++) {
                 var pos = cellsToToggle_1[_i];
                 this.field.toggleCell(pos);
@@ -48,8 +54,13 @@ define(["require", "exports"], function (require, exports) {
         };
         Game.prototype.reset = function () {
             this.generation = 0;
+            this.population = 0;
             this.field.resetField();
+            this.stateChange(this.generation, this.population);
             this.render();
+        };
+        Game.prototype.onStateChange = function (callback) {
+            this.stateChange = callback;
         };
         return Game;
     }());

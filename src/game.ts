@@ -3,14 +3,16 @@ import Field from 'field';
 export default class Game{
     private field : Field;
     private generation : number = 0;
+    private population : number = 0;
     private timer : number;
     private running : boolean;
     private survive : number[];
     private revive : number[];
+    private stateChange = (generation : number, population : number) => {};
 
     constructor(field : Field){
         this.field = field;
-        this.survive = [0,1,2,3,4,5,6,7,8];
+        this.survive = [2,3];
         this.revive = [3];
     }
 
@@ -23,9 +25,11 @@ export default class Game{
         this.generation++;
 
         let cellsToToggle = [];
+        let pop = 0;
 
         this.field.forEachAlive((pos) => {
             let c = this.field.countAliveNeighbours(pos);
+            pop++;
 
             if(this.survive.indexOf(c) == -1) cellsToToggle.push(pos);
 
@@ -34,6 +38,10 @@ export default class Game{
                 if(this.revive.indexOf(nbc) != -1) cellsToToggle.push(nb);
             });
         });
+
+        this.population = pop;
+
+        this.stateChange(this.generation, this.population);
 
         for(let pos of cellsToToggle){
             this.field.toggleCell(pos);
@@ -62,7 +70,13 @@ export default class Game{
 
     reset(){
         this.generation = 0;
+        this.population = 0;
         this.field.resetField();
+        this.stateChange(this.generation, this.population);
         this.render();
+    }
+
+    onStateChange(callback : (generation : number, population : number) => void){
+        this.stateChange = callback;
     }
 }

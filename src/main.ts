@@ -1,7 +1,7 @@
 import Field, {Position as Pos} from 'field';
 import Game from 'game';
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const width = 400;
+const width = 250;
 const height = Math.round(window.innerHeight / window.innerWidth * width);
 const field = new Field(canvas, width, height);
 const game = new Game(field);
@@ -12,9 +12,13 @@ field.toggleCell(new Pos(12, 5));
 field.toggleCell(new Pos(12, 4));
 field.toggleCell(new Pos(11, 3));
 
+const generationText = document.getElementById("generation");
+const populationText = document.getElementById("population");
+
 canvas.addEventListener('click', function(event) {
     let pos = new Pos(Math.floor(event.pageX / canvas.width * width), Math.floor(event.pageY / canvas.height * height));
     field.toggleCell(pos);
+    populationText.innerText = (parseInt(populationText.innerText) + 1).toString();
     game.render();
 }, false);
 
@@ -26,7 +30,10 @@ function resizeCanvas(){
 window.addEventListener("resize", resizeCanvas, false);
 resizeCanvas();
 
-
+game.onStateChange((generation, population) => {
+    generationText.innerText = generation.toString();
+    populationText.innerText = population.toString();
+});
 
 const startStopButton = document.getElementById("startStopButton");
 startStopButton.onclick = function(){
@@ -34,7 +41,7 @@ startStopButton.onclick = function(){
         game.stop();
         startStopButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
     }else{
-        game.start(100);
+        game.start(50);
         startStopButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
     }
 };
