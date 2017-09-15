@@ -2,7 +2,7 @@ define(["require", "exports", "field", "game"], function (require, exports, fiel
     "use strict";
     exports.__esModule = true;
     var canvas = document.getElementById("canvas");
-    var width = 100;
+    var width = 250;
     var height = Math.round(window.innerHeight / window.innerWidth * width);
     var field = new field_1["default"](canvas, width, height);
     var game = new game_1["default"](field);
