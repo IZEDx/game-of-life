@@ -1,7 +1,7 @@
 import Field, {Position as Pos} from 'field';
 import Game from 'game';
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const width = 250;
+const width = 400;
 const height = Math.round(window.innerHeight / window.innerWidth * width);
 const field = new Field(canvas, width, height);
 const game = new Game(field);
