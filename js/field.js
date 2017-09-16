@@ -1,38 +1,23 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    exports.__esModule = true;
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Position = (function () {
         function Position(x, y) {
             this.x = x;
             this.y = y;
         }
-        Position.prototype.sanitize = function (width, height) {
-            if (this.x >= 0)
+        Position.prototype.fitToBorders = function (width, height) {
+            if (this.x >= width)
                 this.x = this.x % width;
-            else
+            else if (this.x < 0)
                 this.x = width - (this.x * -1 % width);
-            if (this.y >= 0)
+            if (this.y >= height)
                 this.y = this.y % height;
-            else
+            else if (this.y < 0)
                 this.y = height - (this.y * -1 % height);
             this.x = Math.ceil(this.x);
             this.y = Math.ceil(this.y);
             return this;
-        };
-        Position.prototype.neighbours = function () {
-            return [
-                new Position(this.x - 1, this.y - 1),
-                new Position(this.x, this.y - 1),
-                new Position(this.x + 1, this.y - 1),
-                new Position(this.x - 1, this.y),
-                new Position(this.x + 1, this.y),
-                new Position(this.x - 1, this.y + 1),
-                new Position(this.x, this.y + 1),
-                new Position(this.x + 1, this.y + 1),
-            ];
-        };
-        Position.prototype.sanitizedNeighbours = function (width, height) {
-            return this.neighbours().map(function (pos) { return pos.sanitize(width, height); });
         };
         return Position;
     }());
@@ -62,21 +47,31 @@ define(["require", "exports"], function (require, exports) {
         Field.prototype.setAlive = function (pos, alive, sanitize) {
             if (sanitize === void 0) { sanitize = true; }
             if (sanitize)
-                pos.sanitize(this.width, this.height);
+                pos.fitToBorders(this.width, this.height);
             this.field[pos.x][pos.y] = alive;
         };
         Field.prototype.isAlive = function (pos, sanitize) {
             if (sanitize === void 0) { sanitize = true; }
             if (sanitize)
-                pos.sanitize(this.width, this.height);
+                pos.fitToBorders(this.width, this.height);
             return this.field[pos.x][pos.y];
         };
         Field.prototype.toggleCell = function (pos) {
-            pos.sanitize(this.width, this.height);
+            pos.fitToBorders(this.width, this.height);
             this.setAlive(pos, !this.isAlive(pos));
         };
         Field.prototype.getNeighbours = function (pos) {
-            return pos.sanitizedNeighbours(this.width, this.height);
+            var _this = this;
+            return [
+                new Position(pos.x - 1, pos.y - 1),
+                new Position(pos.x, pos.y - 1),
+                new Position(pos.x + 1, pos.y - 1),
+                new Position(pos.x - 1, pos.y),
+                new Position(pos.x + 1, pos.y),
+                new Position(pos.x - 1, pos.y + 1),
+                new Position(pos.x, pos.y + 1),
+                new Position(pos.x + 1, pos.y + 1),
+            ].map(function (p) { return p.fitToBorders(_this.width, _this.height); });
         };
         Field.prototype.countAliveNeighbours = function (pos) {
             var _this = this;
@@ -98,11 +93,11 @@ define(["require", "exports"], function (require, exports) {
             this.forEachAlive(function (pos) {
                 _this.ctx.rect(pos.x * cw, pos.y * ch, cw, ch);
             });
-            this.ctx.fillStyle = "#FFFFFF";
+            this.ctx.fillStyle = "#AACBAB";
             this.ctx.fill();
         };
         return Field;
     }());
-    exports["default"] = Field;
+    exports.default = Field;
 });
 //# sourceMappingURL=field.js.map

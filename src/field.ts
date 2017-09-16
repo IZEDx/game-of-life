@@ -8,34 +8,17 @@ export class Position{
         this.y = y;
     }
 
-    sanitize(width : number, height : number) : Position{
-        if(this.x >= 0) this.x = this.x % width;
-        else this.x = width - (this.x * -1 % width);
+    fitToBorders(width : number, height : number) : Position{
+        if(this.x >= width)  this.x = this.x % width;
+        else if(this.x < 0)  this.x = width - (this.x * -1 % width);
 
-        if(this.y >= 0) this.y = this.y % height;
-        else this.y = height - (this.y * -1 % height);
+        if(this.y >= height) this.y = this.y % height;
+        else if(this.y < 0)  this.y = height - (this.y * -1 % height);
 
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
 
         return this;
-    }
-
-    neighbours() : Position[]{
-        return [
-            new Position(this.x - 1,    this.y - 1),
-            new Position(this.x,        this.y - 1),
-            new Position(this.x + 1,    this.y - 1),
-            new Position(this.x - 1,    this.y),
-            new Position(this.x + 1,    this.y),
-            new Position(this.x - 1,    this.y + 1),
-            new Position(this.x,        this.y + 1),
-            new Position(this.x + 1,    this.y + 1),
-        ]
-    }
-
-    sanitizedNeighbours(width : number, height : number) : Position[]{
-        return this.neighbours().map((pos) => pos.sanitize(width, height));
     }
 }
 
@@ -69,22 +52,31 @@ export default class Field{
     }
 
     setAlive(pos : Position, alive : boolean, sanitize : boolean = true){
-        if(sanitize) pos.sanitize(this.width, this.height);
+        if(sanitize) pos.fitToBorders(this.width, this.height);
         this.field[pos.x][pos.y] = alive;
     }
 
     isAlive(pos : Position, sanitize : boolean = true) : boolean{
-        if(sanitize) pos.sanitize(this.width, this.height);
+        if(sanitize) pos.fitToBorders(this.width, this.height);
         return this.field[pos.x][pos.y];
     }
 
     toggleCell(pos : Position){
-        pos.sanitize(this.width, this.height);
+        pos.fitToBorders(this.width, this.height);
         this.setAlive(pos, !this.isAlive(pos));
     }
 
     getNeighbours(pos : Position) : Position[]{
-        return pos.sanitizedNeighbours(this.width, this.height);
+        return [
+            new Position(pos.x - 1,    pos.y - 1),
+            new Position(pos.x,        pos.y - 1),
+            new Position(pos.x + 1,    pos.y - 1),
+            new Position(pos.x - 1,    pos.y),
+            new Position(pos.x + 1,    pos.y),
+            new Position(pos.x - 1,    pos.y + 1),
+            new Position(pos.x,        pos.y + 1),
+            new Position(pos.x + 1,    pos.y + 1),
+        ].map((p) => p.fitToBorders(this.width, this.height));
     }
 
     countAliveNeighbours(pos : Position) : number{
@@ -109,7 +101,7 @@ export default class Field{
         this.forEachAlive((pos) => {
             this.ctx.rect(pos.x * cw, pos.y * ch, cw, ch);
         });
-        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillStyle = "#AACBAB";
         this.ctx.fill();
     }
 }

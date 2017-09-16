@@ -12,50 +12,35 @@ field.toggleCell(new Pos(12, 5));
 field.toggleCell(new Pos(12, 4));
 field.toggleCell(new Pos(11, 3));
 
-const generationText = document.getElementById("generation");
-const populationText = document.getElementById("population");
-
-canvas.addEventListener('click', function(event) {
+function canvasClick(event){
     let pos = new Pos(Math.floor(event.pageX / canvas.width * width), Math.floor(event.pageY / canvas.height * height));
     field.toggleCell(pos);
-    populationText.innerText = (parseInt(populationText.innerText) + 1).toString();
+    game.population++;
     game.render();
-}, false);
+}
 
 function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     game.render();
 }
-window.addEventListener("resize", resizeCanvas, false);
+
 resizeCanvas();
-
-game.onStateChange((generation, population) => {
-    generationText.innerText = generation.toString();
-    populationText.innerText = population.toString();
-});
-
-const startStopButton = document.getElementById("startStopButton");
-startStopButton.onclick = function(){
-    if(game.isRunning()){
-        game.stop();
-        startStopButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-    }else{
-        game.start(50);
-        startStopButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
-    }
-};
+window.addEventListener("resize", resizeCanvas, false);
+canvas.addEventListener('click', canvasClick, false);
 
 
-const nextStepButton = document.getElementById("nextStepButton");
-nextStepButton.onclick = function(){
-    if(!game.isRunning()){
-        game.next();
-    }
-};
+const startStopButton   = document.getElementById("startStopButton");
+const nextStepButton    = document.getElementById("nextStepButton");
+const resetButton       = document.getElementById("resetButton");
+const generationText    = document.getElementById("generation");
+const populationText    = document.getElementById("population");
 
+startStopButton.onclick = () => game.running = !game.running;
+nextStepButton.onclick  = () => game.next();
+resetButton.onclick     = () => game.reset();
 
-const resetButton = document.getElementById("resetButton");
-resetButton.onclick = function(){
-    game.reset();
-};
+game.onPopulationChange = (pop) => populationText.innerText = pop.toString();
+game.onGenerationChange = (gen) => generationText.innerText = gen.toString();
+game.onStateChange      = (run) => startStopButton.innerHTML = '<i class="fa fa-' + (run ? 'pause' : 'play') + '" aria-hidden="true"></i>';
+
