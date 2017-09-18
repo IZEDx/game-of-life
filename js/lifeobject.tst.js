@@ -1,0 +1,1 @@
+//# sourceMappingURL=lifeobject.tst.js.map
