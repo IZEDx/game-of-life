@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Convay's Game of Life</title>
     <script data-main="js/main" src="js/require.js"></script>
-    <link rel="stylesheet" href="css/font-awesome.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <canvas id="canvas"></canvas>
@@ -14,9 +14,18 @@
         Population: <span id="population">0</span>
     </div>
     <div class="toolbar noselect">
-        <button class="btn" id="startStopButton"><i class="fa fa-play" aria-hidden="true"></i></button>
-        <button class="btn" id="nextStepButton"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
-        <button class="btn" id="resetButton"><i class="fa fa-trash" aria-hidden="true"></i></button>
+        <div class="controls">
+            <button class="btn" id="startStopButton"><i class="fa fa-play" aria-hidden="true"></i></button>
+            <button class="btn" id="nextStepButton"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+            <button class="btn" id="resetButton"><i class="fa fa-trash" aria-hidden="true"></i></button>
+        </div>
+        <div class="label">Speed</div>
+        <input class="sld" id="speedSlider" type="range" min="1" max="100" value="100" step="1">
+        <div class="spawns">
+            <button class="btn small btn-spawn" ref="./assets/objects/square.life"><i class="fa fa-square" aria-hidden="true"></i></button>
+            <button class="btn btn-spawn" ref="./assets/objects/glider106.life"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+            <button class="btn btn-spawn" ref="./assets/objects/lifep/RAKE.LIF"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+        </div>
     </div>
 </body>
 </html>

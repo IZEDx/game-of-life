@@ -1,15 +1,18 @@
-import Field from 'field';
+import Field, {Position} from 'field';
 import {nop} from 'utils';
+
 
 export default class Game{
     private _field : Field;
+    private _ghostField : Field;
     private _timer : number;
-    private _survive : number[] = [2,3];
-    private _born : number[] = [3];
-    private _generation : number = 0;
-    private _population : number = 0;
+    private _survive = [2,3];
+    private _born = [3];
+    private _generation = 0;
+    private _population = 0;
     private _running : boolean;
-    private _interval : number = 50;
+    private _interval = 50;
+    private _tickCounter = 0;
 
     onStateChange : (running : boolean) => void = nop;
     onGenerationChange : (generation : number) => void = nop;
@@ -17,29 +20,40 @@ export default class Game{
     onIntervalChange : (interval : number) => void = nop;
     onRuleChange : (rule : string) => void = nop;
 
-    constructor(field : Field){
-        this._field = field;
+    constructor(canvas : HTMLCanvasElement, width : number = 0, height : number = 0){
+        this._field = new Field(canvas, width, height);
+        this._ghostField = new Field(canvas, width, height);
+        this._ghostField.opacity = 0.5;
+        this._ghostField.renderBackground = false;
+        this._ghostField.cellColor = "#66ee66";
     }
 
     set rule(sbrule : string){
-        if(/^\d*\/\d*$/g.test(sbrule)){
-            let parts = sbrule.split("/");
-            this._survive   = parts[0].split("").map(s => parseInt(s));
-            this._born      = parts[1].split("").map(s => parseInt(s));
-            this.onRuleChange(sbrule);
-        }
+        let res = /^(\d*)\/(\d*)$/g.exec(sbrule);
+        if(res == null) return;
+        this._survive   = res[1].split("").map(s => parseInt(s));
+        this._born      = res[2].split("").map(s => parseInt(s));
+
+        this.onRuleChange(sbrule);
     }
     get rule(){
         return this._survive.join() + "/" + this._born.join();
     }
 
+    tick(){
+        this._tickCounter++;
+        if(this._tickCounter % (Math.round(100 / Math.sqrt(this._interval)) - 9) == 0){
+            this.next();
+        }
+    }
 
     set running(run : boolean){
         this._running = run;
         this.onStateChange(run);
 
         if(run){
-            this._timer = setInterval(this.next.bind(this), this._interval);
+            this._tickCounter = 0;
+            this._timer = setInterval(this.tick.bind(this), 10);
         }else{
             clearInterval(this._timer);
         }
@@ -69,16 +83,32 @@ export default class Game{
 
     set interval(interval : number){
         this._interval = interval;
-        if(this._running){
-            clearInterval(this._timer);
-            this._timer = setInterval(this.next.bind(this), this._interval);
-        }
         this.onIntervalChange(interval);
     }
     get interval() : number{
         return this._interval;
     }
 
+
+    get field() : Field{
+        return this._field;
+    }
+    get ghostField() : Field{
+        return this._ghostField;
+    }
+
+    invertRule(){
+        let survive = [];
+        let born = [];
+        for(let i = 0; i <= 8; i++){
+            if(this._survive.indexOf(i) < 0)    survive.push(i);
+            if(this._born.indexOf(i) < 0)       born.push(i);
+        }
+        this._survive = survive;
+        this._born = born;
+
+        this.onRuleChange(this._survive.join("")+"/"+this._born.join(""));
+    }
 
     next(){
         let cellsToToggle = [];
@@ -108,8 +138,8 @@ export default class Game{
 
     render(){
         this._field.render();
+        this._ghostField.render();
     }
-
 
     reset(){
         this.generation = 0;

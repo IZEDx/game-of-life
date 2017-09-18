@@ -1,35 +1,48 @@
-define(["require", "exports", "utils"], function (require, exports, utils_1) {
+define(["require", "exports", "field", "utils"], function (require, exports, field_1, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Game = (function () {
-        function Game(field) {
+        function Game(canvas, width, height) {
+            if (width === void 0) { width = 0; }
+            if (height === void 0) { height = 0; }
             this._survive = [2, 3];
             this._born = [3];
             this._generation = 0;
             this._population = 0;
             this._interval = 50;
+            this._tickCounter = 0;
             this.onStateChange = utils_1.nop;
             this.onGenerationChange = utils_1.nop;
             this.onPopulationChange = utils_1.nop;
             this.onIntervalChange = utils_1.nop;
             this.onRuleChange = utils_1.nop;
-            this._field = field;
+            this._field = new field_1.default(canvas, width, height);
+            this._ghostField = new field_1.default(canvas, width, height);
+            this._ghostField.opacity = 0.5;
+            this._ghostField.renderBackground = false;
+            this._ghostField.cellColor = "#66ee66";
         }
         Object.defineProperty(Game.prototype, "rule", {
             get: function () {
                 return this._survive.join() + "/" + this._born.join();
             },
             set: function (sbrule) {
-                if (/^\d*\/\d*$/g.test(sbrule)) {
-                    var parts = sbrule.split("/");
-                    this._survive = parts[0].split("").map(function (s) { return parseInt(s); });
-                    this._born = parts[1].split("").map(function (s) { return parseInt(s); });
-                    this.onRuleChange(sbrule);
-                }
+                var res = /^(\d*)\/(\d*)$/g.exec(sbrule);
+                if (res == null)
+                    return;
+                this._survive = res[1].split("").map(function (s) { return parseInt(s); });
+                this._born = res[2].split("").map(function (s) { return parseInt(s); });
+                this.onRuleChange(sbrule);
             },
             enumerable: true,
             configurable: true
         });
+        Game.prototype.tick = function () {
+            this._tickCounter++;
+            if (this._tickCounter % (Math.round(100 / Math.sqrt(this._interval)) - 9) == 0) {
+                this.next();
+            }
+        };
         Object.defineProperty(Game.prototype, "running", {
             get: function () {
                 return this._running;
@@ -38,7 +51,8 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
                 this._running = run;
                 this.onStateChange(run);
                 if (run) {
-                    this._timer = setInterval(this.next.bind(this), this._interval);
+                    this._tickCounter = 0;
+                    this._timer = setInterval(this.tick.bind(this), 10);
                 }
                 else {
                     clearInterval(this._timer);
@@ -75,15 +89,38 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
             },
             set: function (interval) {
                 this._interval = interval;
-                if (this._running) {
-                    clearInterval(this._timer);
-                    this._timer = setInterval(this.next.bind(this), this._interval);
-                }
                 this.onIntervalChange(interval);
             },
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Game.prototype, "field", {
+            get: function () {
+                return this._field;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Game.prototype, "ghostField", {
+            get: function () {
+                return this._ghostField;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Game.prototype.invertRule = function () {
+            var survive = [];
+            var born = [];
+            for (var i = 0; i <= 8; i++) {
+                if (this._survive.indexOf(i) < 0)
+                    survive.push(i);
+                if (this._born.indexOf(i) < 0)
+                    born.push(i);
+            }
+            this._survive = survive;
+            this._born = born;
+            this.onRuleChange(this._survive.join("") + "/" + this._born.join(""));
+        };
         Game.prototype.next = function () {
             var _this = this;
             var cellsToToggle = [];
@@ -109,6 +146,7 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
         };
         Game.prototype.render = function () {
             this._field.render();
+            this._ghostField.render();
         };
         Game.prototype.reset = function () {
             this.generation = 0;

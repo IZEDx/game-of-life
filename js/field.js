@@ -19,13 +19,55 @@ define(["require", "exports"], function (require, exports) {
             this.y = Math.ceil(this.y);
             return this;
         };
+        Position.prototype.add = function (x, y) {
+            this.x += x;
+            this.y += y;
+            return this;
+        };
+        Position.sum = function (pos1, pos2) {
+            return new Position(pos1.x + pos2.x, pos1.y + pos2.y);
+        };
         return Position;
     }());
     exports.Position = Position;
+    var Area = (function () {
+        function Area(v1, v2, v3, v4) {
+            if (typeof v1 != "number" && typeof v2 != "number") {
+                this.start = v1;
+                this.end = v2;
+            }
+            else if (typeof v1 != "number" && typeof v2 == "number") {
+                this.start = v1;
+                this.end = new Position(v2, v3);
+            }
+            else if (typeof v1 == "number" && typeof v2 == "number" && typeof v3 == "number" && typeof v4 == "number") {
+                this.start = new Position(v1, v2);
+                this.end = new Position(v3, v4);
+            }
+        }
+        Area.prototype.fitToBorders = function (width, height) {
+            this.start.fitToBorders(width, height);
+            this.end.fitToBorders(width, height);
+            return this;
+        };
+        Area.prototype.forEachPos = function (cb) {
+            for (var y = this.start.y; y <= this.end.y; y++) {
+                for (var x = this.start.x; x <= this.end.y; x++) {
+                    cb(new Position(x, y));
+                }
+            }
+        };
+        return Area;
+    }());
+    exports.Area = Area;
     var Field = (function () {
         function Field(canvas, width, height) {
             if (width === void 0) { width = 0; }
             if (height === void 0) { height = 0; }
+            this.renderBackground = true;
+            this.backgroundColor = "#000000";
+            this.cellColor = "#FFFFFF";
+            this.opacity = 1.0;
             this.canvas = canvas;
             this.ctx = canvas.getContext("2d");
             this.setSize(width, height);
@@ -44,21 +86,30 @@ define(["require", "exports"], function (require, exports) {
                 }
             }
         };
-        Field.prototype.setAlive = function (pos, alive, sanitize) {
-            if (sanitize === void 0) { sanitize = true; }
-            if (sanitize)
-                pos.fitToBorders(this.width, this.height);
+        Field.prototype.setAlive = function (pos, alive) {
+            if (alive === void 0) { alive = true; }
+            pos.fitToBorders(this.width, this.height);
             this.field[pos.x][pos.y] = alive;
         };
-        Field.prototype.isAlive = function (pos, sanitize) {
-            if (sanitize === void 0) { sanitize = true; }
-            if (sanitize)
-                pos.fitToBorders(this.width, this.height);
+        Field.prototype.isAlive = function (pos) {
+            pos.fitToBorders(this.width, this.height);
             return this.field[pos.x][pos.y];
         };
         Field.prototype.toggleCell = function (pos) {
-            pos.fitToBorders(this.width, this.height);
             this.setAlive(pos, !this.isAlive(pos));
+        };
+        Field.prototype.setLifeObjectAlive = function (obj, pos, alive) {
+            if (alive === void 0) { alive = true; }
+            for (var _i = 0, _a = obj.aliveCells; _i < _a.length; _i++) {
+                var target = _a[_i];
+                this.setAlive(Position.sum(pos, target), alive);
+            }
+        };
+        Field.prototype.toggleLifeObject = function (obj, pos) {
+            for (var _i = 0, _a = obj.aliveCells; _i < _a.length; _i++) {
+                var target = _a[_i];
+                this.toggleCell(Position.sum(pos, target));
+            }
         };
         Field.prototype.getNeighbours = function (pos) {
             var _this = this;
@@ -85,16 +136,24 @@ define(["require", "exports"], function (require, exports) {
         };
         Field.prototype.render = function () {
             var _this = this;
-            this.ctx.fillStyle = "#000000";
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            var ga = this.ctx.globalAlpha;
+            this.ctx.globalAlpha = this.opacity;
+            if (this.renderBackground) {
+                this.ctx.fillStyle = this.backgroundColor;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            }
             var cw = this.canvas.width / this.width;
             var ch = this.canvas.height / this.height;
             this.ctx.beginPath();
             this.forEachAlive(function (pos) {
                 _this.ctx.rect(pos.x * cw, pos.y * ch, cw, ch);
             });
-            this.ctx.fillStyle = "#AACBAB";
+            this.ctx.fillStyle = this.cellColor;
             this.ctx.fill();
+            this.ctx.globalAlpha = ga;
+        };
+        Field.prototype.mouseEventToPosition = function (event) {
+            return new Position(Math.floor(event.pageX / this.canvas.width * this.width), Math.floor(event.pageY / this.canvas.height * this.height));
         };
         return Field;
     }());
