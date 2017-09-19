@@ -3,7 +3,7 @@ import Game from 'game';
 import LifeObject, {dot} from 'lifeobject';
 import {get} from 'utils';
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const width = 250;
+const width = 1000;
 const height = Math.round(window.innerHeight / window.innerWidth * width);
 const game = new Game(canvas, width, height);
 let selectedObject : LifeObject = dot;
@@ -28,7 +28,8 @@ function canvasMouseMove(event : MouseEvent){
     game.ghostField.setLifeObjectAlive(selectedObject, pos
         .add(-selectedObject.origin.x, -selectedObject.origin.y)
         .add(selectedObject.width/-2, selectedObject.height/-2));
-    game.render();
+    if(game.speed < 75 || !game.running)
+        game.render();
 }
 
 resizeCanvas();
@@ -48,7 +49,7 @@ const spawnButtons      = document.getElementsByClassName("btn-spawn") as HTMLCo
 startStopButton.onclick     = () => game.running = !game.running;
 nextStepButton.onclick      = () => game.next();
 resetButton.onclick         = () => game.reset();
-speedSlider.oninput         = (ev) => game.interval = parseInt(speedSlider.value);
+speedSlider.oninput         = (ev) => game.speed = parseInt(speedSlider.value);
 for(let i = 0; i < spawnButtons.length; i++){
     spawnButtons.item(i).onclick = () =>
         get(spawnButtons.item(i).getAttribute("ref")).then( str => {

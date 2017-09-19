@@ -2,7 +2,7 @@ define(["require", "exports", "field", "game", "lifeobject", "utils"], function 
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var canvas = document.getElementById("canvas");
-    var width = 250;
+    var width = 1000;
     var height = Math.round(window.innerHeight / window.innerWidth * width);
     var game = new game_1.default(canvas, width, height);
     var selectedObject = lifeobject_1.dot;
@@ -24,7 +24,8 @@ define(["require", "exports", "field", "game", "lifeobject", "utils"], function 
         game.ghostField.setLifeObjectAlive(selectedObject, pos
             .add(-selectedObject.origin.x, -selectedObject.origin.y)
             .add(selectedObject.width / -2, selectedObject.height / -2));
-        game.render();
+        if (game.speed < 75 || !game.running)
+            game.render();
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas, false);
@@ -40,7 +41,7 @@ define(["require", "exports", "field", "game", "lifeobject", "utils"], function 
     startStopButton.onclick = function () { return game.running = !game.running; };
     nextStepButton.onclick = function () { return game.next(); };
     resetButton.onclick = function () { return game.reset(); };
-    speedSlider.oninput = function (ev) { return game.interval = parseInt(speedSlider.value); };
+    speedSlider.oninput = function (ev) { return game.speed = parseInt(speedSlider.value); };
     var _loop_1 = function (i) {
         spawnButtons.item(i).onclick = function () {
             return utils_1.get(spawnButtons.item(i).getAttribute("ref")).then(function (str) {

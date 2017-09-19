@@ -33,7 +33,6 @@ export default class LifeObject{
         let origin = new Position(0,0);
         for(let line of lifeString.split(/[\n\t]+/g)){
             let res = line.match(/^#P\s+(-?\d+)\s+(-?\d+)\s+$/);
-            console.log(line, res);
             if(res != null) {
                 y = 0;
                 origin = new Position(parseInt(res[1]), parseInt(res[2]));

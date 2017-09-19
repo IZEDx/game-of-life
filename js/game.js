@@ -9,18 +9,20 @@ define(["require", "exports", "field", "utils"], function (require, exports, fie
             this._born = [3];
             this._generation = 0;
             this._population = 0;
-            this._interval = 50;
+            this._interval = 1;
+            this._speed = 100;
             this._tickCounter = 0;
             this.onStateChange = utils_1.nop;
             this.onGenerationChange = utils_1.nop;
             this.onPopulationChange = utils_1.nop;
-            this.onIntervalChange = utils_1.nop;
+            this.onSpeedChange = utils_1.nop;
             this.onRuleChange = utils_1.nop;
             this._field = new field_1.default(canvas, width, height);
             this._ghostField = new field_1.default(canvas, width, height);
             this._ghostField.opacity = 0.5;
             this._ghostField.renderBackground = false;
             this._ghostField.cellColor = "#66ee66";
+            this.speed = 25;
         }
         Object.defineProperty(Game.prototype, "rule", {
             get: function () {
@@ -39,7 +41,7 @@ define(["require", "exports", "field", "utils"], function (require, exports, fie
         });
         Game.prototype.tick = function () {
             this._tickCounter++;
-            if (this._tickCounter % (Math.round(100 / Math.sqrt(this._interval)) - 9) == 0) {
+            if (this._tickCounter % this._interval == 0) {
                 this.next();
             }
         };
@@ -83,13 +85,15 @@ define(["require", "exports", "field", "utils"], function (require, exports, fie
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Game.prototype, "interval", {
+        Object.defineProperty(Game.prototype, "speed", {
             get: function () {
-                return this._interval;
+                return this._speed;
             },
-            set: function (interval) {
-                this._interval = interval;
-                this.onIntervalChange(interval);
+            set: function (speed) {
+                this._speed = speed;
+                this._interval = Math.round(100 / Math.sqrt(this.speed)) - 9;
+                console.log(this._interval);
+                this.onSpeedChange(speed);
             },
             enumerable: true,
             configurable: true

@@ -11,13 +11,14 @@ export default class Game{
     private _generation = 0;
     private _population = 0;
     private _running : boolean;
-    private _interval = 50;
+    private _interval = 1;
+    private _speed = 100;
     private _tickCounter = 0;
 
     onStateChange : (running : boolean) => void = nop;
     onGenerationChange : (generation : number) => void = nop;
     onPopulationChange : (population : number) => void = nop;
-    onIntervalChange : (interval : number) => void = nop;
+    onSpeedChange : (speed : number) => void = nop;
     onRuleChange : (rule : string) => void = nop;
 
     constructor(canvas : HTMLCanvasElement, width : number = 0, height : number = 0){
@@ -26,6 +27,7 @@ export default class Game{
         this._ghostField.opacity = 0.5;
         this._ghostField.renderBackground = false;
         this._ghostField.cellColor = "#66ee66";
+        this.speed = 25;
     }
 
     set rule(sbrule : string){
@@ -42,7 +44,7 @@ export default class Game{
 
     tick(){
         this._tickCounter++;
-        if(this._tickCounter % (Math.round(100 / Math.sqrt(this._interval)) - 9) == 0){
+        if(this._tickCounter % this._interval == 0){
             this.next();
         }
     }
@@ -81,12 +83,14 @@ export default class Game{
     }
 
 
-    set interval(interval : number){
-        this._interval = interval;
-        this.onIntervalChange(interval);
+    set speed(speed : number){
+        this._speed = speed;
+        this._interval = Math.round(100 / Math.sqrt(this.speed)) - 9;
+        console.log(this._interval);
+        this.onSpeedChange(speed);
     }
-    get interval() : number{
-        return this._interval;
+    get speed() : number{
+        return this._speed;
     }
 
 

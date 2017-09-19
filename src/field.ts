@@ -172,3 +172,5 @@ export default class Field{
         return new Position(Math.floor(event.pageX / this.canvas.width * this.width), Math.floor(event.pageY / this.canvas.height * this.height));
     }
 }
+
+
