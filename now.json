@@ -1,0 +1,10 @@
+{
+  "alias": "gol.now.ized.io",
+  "type": "static",
+  "target": "dist",
+  "files": [
+    "index.html",
+    "dist"
+  ],
+  "public": true
+}
