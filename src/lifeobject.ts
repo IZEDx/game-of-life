@@ -53,7 +53,7 @@ export default class LifeObject{
         let y = 0;
         let origin = new Position(0,0);
         for(let line of lifeString.split("\n")){
-            let res = line.match(/^#P\s+(-?\d+)\s+(-?\d+)\s+$/);
+            let res = line.match(/^\s*#P\s+(-?\d+)\s+(-?\d+)\s+$/);
             console.log(res);
             if(res != null) {
                 y = 0;
