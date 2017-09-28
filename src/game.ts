@@ -86,7 +86,6 @@ export default class Game{
     set speed(speed : number){
         this._speed = speed;
         this._interval = Math.round(100 / Math.sqrt(this.speed)) - 9;
-        console.log(this._interval);
         this.onSpeedChange(speed);
     }
     get speed() : number{
