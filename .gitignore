@@ -1,3 +1,4 @@
 .idea/*
 *.map
-assets/objects/lifep
+dist/objects/lifep
+node_modules
