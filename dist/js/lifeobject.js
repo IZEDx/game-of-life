@@ -69,12 +69,10 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
             var origin = new field_1.Position(0, 0);
             for (var _i = 0, _a = lifeString.split("\n"); _i < _a.length; _i++) {
                 var line = _a[_i];
-                var res = line.match(/#P\s+(-?\d+)\s+(-?\d+)\s+/);
-                console.log(line);
+                var res = line.match(/#P\s+(-?\d+)\s+(-?\d+)/);
                 if (res != null) {
                     y = 0;
                     origin = new field_1.Position(parseInt(res[1]), parseInt(res[2]));
-                    console.log(origin);
                 }
                 if (line.substr(0, 1) == "#")
                     continue;
