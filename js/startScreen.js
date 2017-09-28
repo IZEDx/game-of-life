@@ -1,1 +1,0 @@
-//# sourceMappingURL=startScreen.js.map
