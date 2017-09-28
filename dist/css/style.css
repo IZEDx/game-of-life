@@ -1,0 +1,172 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #000000; }
+
+#canvas {
+  display: block;
+  cursor: none; }
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.background {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; }
+
+.overlay {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh; }
+
+.stats {
+  position: absolute;
+  display: block;
+  top: 20px;
+  right: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none; }
+  .stats span {
+    display: inline-block;
+    min-width: 50px; }
+
+.btn {
+  background-color: transparent;
+  font-size: 20px;
+  color: #ffffff;
+  opacity: 0.5;
+  border: none;
+  outline: none;
+  padding: 5px;
+  line-height: 20px;
+  height: 30px;
+  width: 30px;
+  text-shadow: 0 0 2px white;
+  pointer-events: initial; }
+  .btn:hover {
+    opacity: 1;
+    text-shadow: 0 0 5px white; }
+  .btn.small {
+    font-size: 10px; }
+
+#objectList {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 100%; }
+  #objectList .object {
+    width: 100%;
+    height: 50px;
+    font-size: 17px;
+    margin: 5px 0;
+    text-align: center;
+    line-height: 50px;
+    padding: 0;
+    background-color: rgba(10, 10, 15, 0.9);
+    border: solid 1px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 0px 50px -10px rgba(255, 255, 255, 0.15);
+    opacity: 0.5; }
+    #objectList .object:hover, #objectList .object:focus {
+      opacity: 1;
+      color: #ffffff;
+      text-shadow: 0 0 4px white; }
+
+.modal {
+  display: none; }
+  .modal .content {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 60vw;
+    min-height: 500px;
+    max-height: 90vh;
+    color: #eeeeee;
+    background-color: rgba(10, 10, 15, 0.9);
+    border: solid 1px rgba(255, 255, 255, 0.07);
+    left: 50vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 0px 0px 20px -10px rgba(255, 255, 255, 0.2); }
+    .modal .content .header {
+      display: block;
+      order: 1;
+      flex: 0 0 35px;
+      padding: 5px;
+      margin: 0 25px; }
+      .modal .content .header .title {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        opacity: 0.7;
+        text-shadow: 0 0 2px white;
+        font-size: 20px;
+        line-height: 35px; }
+    .modal .content .body {
+      order: 2;
+      flex: 1 1;
+      padding: 10px;
+      opacity: 0.7;
+      text-shadow: 0 0 1px white;
+      overflow-x: hidden;
+      overflow-y: auto; }
+    .modal .content .modal-close {
+      position: absolute;
+      right: 6px;
+      top: 6px; }
+  .modal .sidebar {
+    width: 20vw;
+    height: 100vh;
+    max-height: 99vh;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: none; }
+
+.toolbar {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  bottom: 0;
+  height: 40px;
+  width: 100vw;
+  pointer-events: none; }
+  .toolbar .controls {
+    order: 1; }
+  .toolbar .label {
+    order: 2;
+    padding: 10px;
+    padding-left: 30px;
+    font-size: 15px;
+    color: #ffffff;
+    opacity: 0.5;
+    text-shadow: 0 0 2px white; }
+  .toolbar .sld {
+    order: 3;
+    margin-right: 20px;
+    pointer-events: initial; }
+  .toolbar .spawns {
+    order: 4; }
+  .toolbar .btn {
+    margin-left: 10px; }
+
+/*# sourceMappingURL=style.css.map */

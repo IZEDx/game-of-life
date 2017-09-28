@@ -7,25 +7,37 @@ define(["require", "exports"], function (require, exports) {
             this.y = y;
         }
         Position.prototype.fitToBorders = function (width, height) {
+            var x = this.x;
+            var y = this.y;
             if (this.x >= width)
-                this.x = this.x % width;
+                x = this.x % width;
             else if (this.x < 0)
-                this.x = width - (this.x * -1 % width);
+                x = width - (this.x * -1 % width);
             if (this.y >= height)
-                this.y = this.y % height;
+                y = this.y % height;
             else if (this.y < 0)
-                this.y = height - (this.y * -1 % height);
-            this.x = Math.ceil(this.x);
-            this.y = Math.ceil(this.y);
-            return this;
+                y = height - (this.y * -1 % height);
+            return new Position(Math.ceil(x), Math.ceil(y));
         };
-        Position.prototype.add = function (x, y) {
-            this.x += x;
-            this.y += y;
-            return this;
+        Position.prototype.add = function (xOrPos, y) {
+            if (typeof xOrPos == "number" && y != null) {
+                return new Position(this.x + xOrPos, this.y + y);
+            }
+            else if (xOrPos instanceof Position) {
+                return new Position(this.x + xOrPos.x, this.y + xOrPos.y);
+            }
+            else {
+                return this;
+            }
         };
-        Position.sum = function (pos1, pos2) {
-            return new Position(pos1.x + pos2.x, pos1.y + pos2.y);
+        Position.prototype.mul = function (fac) {
+            return new Position(this.x * fac, this.y * fac);
+        };
+        Position.prototype.sub = function (pos) {
+            return this.add(pos.mul(-1));
+        };
+        Position.prototype.ceil = function () {
+            return new Position(Math.ceil(this.x), Math.ceil(this.y));
         };
         return Position;
     }());
@@ -88,11 +100,11 @@ define(["require", "exports"], function (require, exports) {
         };
         Field.prototype.setAlive = function (pos, alive) {
             if (alive === void 0) { alive = true; }
-            pos.fitToBorders(this.width, this.height);
+            pos = pos.fitToBorders(this.width, this.height);
             this.field[pos.x][pos.y] = alive;
         };
         Field.prototype.isAlive = function (pos) {
-            pos.fitToBorders(this.width, this.height);
+            pos = pos.fitToBorders(this.width, this.height);
             return this.field[pos.x][pos.y];
         };
         Field.prototype.toggleCell = function (pos) {
@@ -102,13 +114,13 @@ define(["require", "exports"], function (require, exports) {
             if (alive === void 0) { alive = true; }
             for (var _i = 0, _a = obj.aliveCells; _i < _a.length; _i++) {
                 var target = _a[_i];
-                this.setAlive(Position.sum(pos, target), alive);
+                this.setAlive(pos.add(target), alive);
             }
         };
         Field.prototype.toggleLifeObject = function (obj, pos) {
             for (var _i = 0, _a = obj.aliveCells; _i < _a.length; _i++) {
                 var target = _a[_i];
-                this.toggleCell(Position.sum(pos, target));
+                this.toggleCell(pos.add(target));
             }
         };
         Field.prototype.getNeighbours = function (pos) {
@@ -154,6 +166,9 @@ define(["require", "exports"], function (require, exports) {
         };
         Field.prototype.mouseEventToPosition = function (event) {
             return new Position(Math.floor(event.pageX / this.canvas.width * this.width), Math.floor(event.pageY / this.canvas.height * this.height));
+        };
+        Field.prototype.getCenter = function () {
+            return new Position(this.width / 2, this.height / 2).ceil();
         };
         return Field;
     }());

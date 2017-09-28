@@ -45,6 +45,24 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
             enumerable: true,
             configurable: true
         });
+        LifeObject.prototype.save = function (name) {
+            window.localStorage.setItem(name, JSON.stringify(this._aliveCells));
+        };
+        LifeObject.prototype.centerPos = function (pos) {
+            return pos.sub(this.origin).add(this.width / -2, this.height / -2);
+        };
+        LifeObject.load = function (name) {
+            var ps = JSON.parse(window.localStorage.getItem(name));
+            if (ps == null)
+                throw new Error("LifeObject \"" + name + "\" not found.");
+            return new LifeObject(ps.map(function (p) { return new field_1.Position(p.x, p.y); }));
+        };
+        LifeObject.allSavedObjects = function () {
+            var os = [];
+            for (var i = 0; i < window.localStorage.length; i++)
+                os.push(window.localStorage.key(i));
+            return os;
+        };
         LifeObject.parseLife105 = function (lifeString) {
             var aliveCells = [];
             var y = 0;

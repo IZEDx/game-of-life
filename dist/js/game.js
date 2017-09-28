@@ -92,7 +92,6 @@ define(["require", "exports", "field", "utils"], function (require, exports, fie
             set: function (speed) {
                 this._speed = speed;
                 this._interval = Math.round(100 / Math.sqrt(this.speed)) - 9;
-                console.log(this._interval);
                 this.onSpeedChange(speed);
             },
             enumerable: true,
