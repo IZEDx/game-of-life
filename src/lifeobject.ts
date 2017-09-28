@@ -52,7 +52,7 @@ export default class LifeObject{
         let aliveCells : Position[] = [];
         let y = 0;
         let origin = new Position(0,0);
-        for(let line of lifeString.split(/[\n\t]+/g)){
+        for(let line of lifeString.split("\n")){
             let res = line.match(/^#P\s+(-?\d+)\s+(-?\d+)\s+$/);
             if(res != null) {
                 y = 0;
@@ -72,7 +72,7 @@ export default class LifeObject{
 
     static parseLife106(lifeString : string) : LifeObject{
         let aliveCells : Position[] = [];
-        for(let line of lifeString.split(/[\n\t]+/g)){
+        for(let line of lifeString.split("\n")){
             if(line.substr(0,1) == "#") continue;
             let res = line.match(/^(\d+)\s+(\d+)$/);
             if(res == null) continue;
