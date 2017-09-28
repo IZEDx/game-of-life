@@ -23,5 +23,7 @@ define(["require", "exports", "game", "utils", "jquery", "object-manager"], func
     $("#singleDotButton").on("click", function () { return objectManager.switchTo("Dot"); });
     utils_1.checkForModals();
     utils_1.spawnStartscreen(game);
+    window["gameOfLife"] = game;
+    window["objectManager"] = objectManager;
 });
 //# sourceMappingURL=main.js.map

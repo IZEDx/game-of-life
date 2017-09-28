@@ -35,3 +35,6 @@ checkForModals();
 
 // Startscreen
 spawnStartscreen(game);
+
+window["gameOfLife"] = game;
+window["objectManager"] = objectManager;
