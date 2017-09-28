@@ -10,16 +10,16 @@ export class Position{
     }
 
     fitToBorders(width : number, height : number) : Position{
-        let x = this.x;
-        let y = this.y;
+        let x = Math.ceil(this.x);
+        let y = Math.ceil(this.y);
 
-        if(this.x >= width)  x = this.x % width;
-        else if(this.x < 0)  x = width - (this.x * -1 % width);
+        if(x >= width)  x = x % width;
+        else if(x < 0)  x = width - (x * -1 % width);
 
-        if(this.y >= height) y = this.y % height;
-        else if(this.y < 0)  y = height - (this.y * -1 % height);
+        if(y >= height) y = y % height;
+        else if(y < 0)  y = height - (y * -1 % height);
 
-        return new Position(Math.ceil(x), Math.ceil(y));
+        return new Position(x, y);
     }
 
     add(xOrPos : number|Position, y? : number) : Position{

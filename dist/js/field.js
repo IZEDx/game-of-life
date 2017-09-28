@@ -7,17 +7,17 @@ define(["require", "exports"], function (require, exports) {
             this.y = y;
         }
         Position.prototype.fitToBorders = function (width, height) {
-            var x = this.x;
-            var y = this.y;
-            if (this.x >= width)
-                x = this.x % width;
-            else if (this.x < 0)
-                x = width - (this.x * -1 % width);
-            if (this.y >= height)
-                y = this.y % height;
-            else if (this.y < 0)
-                y = height - (this.y * -1 % height);
-            return new Position(Math.ceil(x), Math.ceil(y));
+            var x = Math.ceil(this.x);
+            var y = Math.ceil(this.y);
+            if (x >= width)
+                x = x % width;
+            else if (x < 0)
+                x = width - (x * -1 % width);
+            if (y >= height)
+                y = y % height;
+            else if (y < 0)
+                y = height - (y * -1 % height);
+            return new Position(x, y);
         };
         Position.prototype.add = function (xOrPos, y) {
             if (typeof xOrPos == "number" && y != null) {

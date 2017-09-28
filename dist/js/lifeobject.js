@@ -67,7 +67,7 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
             var aliveCells = [];
             var y = 0;
             var origin = new field_1.Position(0, 0);
-            for (var _i = 0, _a = lifeString.split(/[\n\t]+/g); _i < _a.length; _i++) {
+            for (var _i = 0, _a = lifeString.split(/[\r\n]+/g); _i < _a.length; _i++) {
                 var line = _a[_i];
                 var res = line.match(/^#P\s+(-?\d+)\s+(-?\d+)\s+$/);
                 if (res != null) {
@@ -89,7 +89,7 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
         };
         LifeObject.parseLife106 = function (lifeString) {
             var aliveCells = [];
-            for (var _i = 0, _a = lifeString.split(/[\n\t]+/g); _i < _a.length; _i++) {
+            for (var _i = 0, _a = lifeString.split(/[\r\n]+/g); _i < _a.length; _i++) {
                 var line = _a[_i];
                 if (line.substr(0, 1) == "#")
                     continue;
