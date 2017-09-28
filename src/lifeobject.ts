@@ -27,6 +27,27 @@ export default class LifeObject{
         this._origin = minPoint;
     }
 
+    save(name: string){
+        window.localStorage.setItem(name, JSON.stringify(this._aliveCells));
+    }
+
+    centerPos(pos : Position) : Position{
+        return pos.sub(this.origin).add(this.width/-2, this.height/-2)
+    }
+
+    static load(name: string) : LifeObject{
+        let ps = JSON.parse(window.localStorage.getItem(name));
+        if(ps == null) throw new Error("LifeObject \"" + name + "\" not found.");
+        return new LifeObject(ps.map(p => new Position(p.x, p.y)));
+    }
+
+    static allSavedObjects() : string[]{
+        let os : string[] = [];
+        for(let i = 0; i < window.localStorage.length; i++)
+            os.push(window.localStorage.key(i));
+        return os;
+    }
+
     static parseLife105(lifeString : string) : LifeObject{
         let aliveCells : Position[] = [];
         let y = 0;
