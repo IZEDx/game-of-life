@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Conway's Game of Life</title>
-    <script data-main="js/main" src="js/require.js"></script>
-    <link rel="stylesheet" href="assets/css/font-awesome.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <script data-main="dist/js/main" src="dist/js/require.js"></script>
+    <link rel="stylesheet" href="dist/css/font-awesome.css">
+    <link rel="stylesheet" href="dist/css/style.css">
 </head>
 <body>
     <canvas id="canvas"></canvas>
@@ -22,10 +22,32 @@
         <div class="label">Speed</div>
         <input class="sld" id="speedSlider" type="range" min="1" max="100" value="25" step="1">
         <div class="spawns">
-            <button class="btn small btn-spawn" ref="./assets/objects/square.life"><i class="fa fa-square" aria-hidden="true"></i></button>
-            <button class="btn btn-spawn" ref="./assets/objects/glider106.life"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
-            <button class="btn btn-spawn" ref="./assets/objects/BSHIP2.LIF"><i class="fa fa-bug" aria-hidden="true"></i></button>
-            <button class="btn btn-spawn" ref="./assets/objects/LOOP.LIF"><i class="fa fa-bug" aria-hidden="true"></i></button>
+            <button class="btn small" id="singleDotButton"><i class="fa fa-square" aria-hidden="true"></i></button>
+            <button class="btn modal-toggle" ref="#addObjectModal"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            <button class="btn modal-toggle" ref="#objectManagerModal"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
+        </div>
+    </div>
+    <div class="modal" id="addObjectModal">
+        <div class="content">
+            <div class="header">
+                <div class="title">Save Object</div>
+                <button class="btn modal-close"><i class="fa fa-times" aria-hidden="true"></i></button>
+            </div>
+            <div class="body">
+                Test Test Test blablabla
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="objectManagerModal">
+        <div class="content sidebar">
+            <div class="header">
+                <div class="title">Object Manager</div>
+                <button class="btn modal-close"><i class="fa fa-times" aria-hidden="true"></i></button>
+            </div>
+            <div class="body">
+                <div id="objectList">
+                </div>
+            </div>
         </div>
     </div>
 </body>
