@@ -161,10 +161,10 @@ define(["require", "exports"], function (require, exports) {
             this._end.fitToBorders(width, height);
             return this;
         };
-        Area.prototype.forEachPos = function (cb) {
+        Area.prototype.forEachPos = function (fn) {
             for (var y = this._start.y; y <= this._end.y; y++) {
                 for (var x = this._start.x; x <= this._end.y; x++) {
-                    cb(new Vector(x, y));
+                    fn(new Vector(x, y));
                 }
             }
         };

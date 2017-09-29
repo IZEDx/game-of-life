@@ -1,6 +1,13 @@
-
+/**
+ * Simple nop, for whenever needed.
+ */
 export function nop() {}
 
+/**
+ * Fetches the content of the given URL using HTTP-GET.
+ * @param url {string} URL to fetch.
+ * @returns {Promise<string>} Promise containing the result string.
+ */
 export function get(url : string){
     return new Promise((resolve : (str) => void) =>{
         let xmlHttp = new XMLHttpRequest();
@@ -34,24 +41,52 @@ export function checkForModals(){
     });
 }
 
+/**
+ * Holds methods for easier calculation with the aspect ratio.
+ */
 export class AspectRatio {
+    /**
+     * Calculates the height of the window by using the width and the aspect ratio.
+     * @param width {number} Width to get height for.
+     * @returns {number} Corresponding height.
+     */
     static heightFromWidth(width : number){
         return Math.round(window.innerHeight / window.innerWidth * width);
     }
+    /**
+     * Calculates the width of the window by using the height and the aspect ratio.
+     * @param height {number} Height to get width for.
+     * @returns {number} Corresponding width.
+     */
     static widthFromHeight(height : number){
         return Math.round(window.innerWidth / window.innerHeight * height);
     }
 }
 
+
+/**
+ * Vector class to hold x,y and calculate with them.
+ * Operations on the Vector always return a new Vector.
+ */
 export class Vector{
     x : number;
     y : number;
 
+    /**
+     * Creates a Vector
+     * @constructor
+     * @param x {number} x-coordinate
+     * @param y {number} y-coordinate
+     */
     constructor(x : number, y : number){
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Serializes the Vector into an object containing the x- and y-coordinate.
+     * @returns {{x: number, y: number}}
+     */
     serialize(){
         return {
             x : this.x,
@@ -59,6 +94,14 @@ export class Vector{
         }
     }
 
+    /**
+     * Fits the Vector into the given width and height.
+     * If either is exceeded or either coordinate is negative, the vector will be re-positioned to the opposite side,
+     * until it fits inside the given borders.
+     * @param width
+     * @param height
+     * @returns {Vector}
+     */
     fitToBorders(width : number, height : number) : Vector{
         let x = Math.ceil(this.x);
         let y = Math.ceil(this.y);
@@ -72,6 +115,12 @@ export class Vector{
         return new Vector(x, y);
     }
 
+    /**
+     * Adds either x-,y-coordinates or a Vector to this Vector and returns the sum Vector.
+     * @param xOrVec {number|Vector} x-coordinate or vector to add.
+     * @param y {number?} y-coordinate to add, if first parameter was the x-coordinate.
+     * @returns {Vector} Resulting Vector.
+     */
     add(xOrVec : number|Vector, y? : number) : Vector{
         if(typeof xOrVec == "number" && y != null){
             return new Vector(this.x + xOrVec, this.y + y);
@@ -82,19 +131,36 @@ export class Vector{
         }
     }
 
+    /**
+     * Multiplies the Vector by a given factor and returns the result.
+     * @param fac Factor to multiply the Vector with.
+     * @returns {Vector} Resulting Vector.
+     */
     mul(fac : number){
         return new Vector(this.x * fac, this.y * fac);
     }
 
+    /**
+     * Subtracts one Vector from the other and returns the result.
+     * @param vec Vector to be substracted.
+     * @returns {Vector} Resulting Vector.
+     */
     sub(vec : Vector){
         return this.add(vec.mul(-1));
     }
 
+    /**
+     * Rounds the Vector's coordinates to the nearest whole.
+     * @returns {Vector} Resulting Vector.
+     */
     ceil() : Vector{
         return new Vector(Math.ceil(this.x), Math.ceil(this.y));
     }
 }
 
+/**
+ * Area class providing corners defining the area and it's size.
+ */
 export class Area{
     private _start : Vector;
     private _end   : Vector;
@@ -115,7 +181,14 @@ export class Area{
         this.calculateSize();
     }
 
-    constructor(v1 : number|Vector, v2 : number|Vector, v3 : number, v4?: number){
+    /**
+     * @constructor
+     * @param v1 {number|Vector} Either x1 or v1.
+     * @param v2 {number|Vector} Either y1, x2 or v2.
+     * @param v3? {number} Either x2 or y2
+     * @param v4? {number} y2
+     */
+    constructor(v1 : number|Vector, v2 : number|Vector, v3? : number, v4?: number){
         if(typeof v1 != "number" && typeof v2 != "number"){
             this._start = v1;
             this._end = v2;
@@ -129,6 +202,10 @@ export class Area{
         this.calculateSize();
     }
 
+    /**
+     * Serializes the Area
+     * @returns {{start: {x: number, y: number}, end: {x: number, y: number}, width: number, height: number}}
+     */
     serialize() : Object|Array<any>{
         return {
             start : this._start.serialize(),
@@ -138,21 +215,35 @@ export class Area{
         }
     }
 
+    /**
+     * Updates the width and height based on the start and end vector.
+     */
     calculateSize(){
         this._width = Math.sqrt(Math.pow(this._start.x - this._end.x, 2));
         this._height = Math.sqrt(Math.pow(this._start.y - this._end.y, 2));
     }
 
+    /**
+     * Fits the area to the given width and height
+     * @see {@link Vector.serialize}
+     * @param width
+     * @param height
+     * @returns {Area}
+     */
     fitToBorders(width : number, height : number) : Area{
         this._start.fitToBorders(width,height);
         this._end.fitToBorders(width,height);
         return this;
     }
 
-    forEachPos(cb : (pos : Vector) => void){
+    /**
+     * Calls fn for each Position in the Area
+     * @param fn {(pos : Vector) => void}
+     */
+    forEachPos(fn : (pos : Vector) => void){
         for(let y = this._start.y; y <= this._end.y; y++){
             for(let x = this._start.x; x <= this._end.y; x++){
-                cb(new Vector(x, y));
+                fn(new Vector(x, y));
             }
         }
     }
