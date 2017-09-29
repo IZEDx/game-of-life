@@ -1,14 +1,23 @@
-define(["require", "exports", "field"], function (require, exports, field_1) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define(["require", "exports", "utils"], function (require, exports, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var LifeObject = (function () {
+    var LifeObject = (function (_super) {
+        __extends(LifeObject, _super);
         function LifeObject(aliveCells) {
-            this._aliveCells = [];
-            this._width = 0;
-            this._height = 0;
-            this._origin = new field_1.Position(0, 0);
-            var minPoint = new field_1.Position(999, 999);
-            var maxPoint = new field_1.Position(0, 0);
+            var _this = _super.call(this, 0, 0, 0, 0) || this;
+            _this._aliveCells = [];
+            var minPoint = new utils_1.Vector(999, 999);
+            var maxPoint = new utils_1.Vector(0, 0);
             for (var _i = 0, aliveCells_1 = aliveCells; _i < aliveCells_1.length; _i++) {
                 var pos = aliveCells_1[_i];
                 if (pos.x < minPoint.x)
@@ -19,60 +28,33 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
                     minPoint.y = pos.y;
                 if (pos.y > maxPoint.y)
                     maxPoint.y = pos.y;
-                this._aliveCells.push(new field_1.Position(pos.x, pos.y));
+                _this._aliveCells.push(new utils_1.Vector(pos.x, pos.y));
             }
-            this._width = maxPoint.x - minPoint.x;
-            this._height = maxPoint.y - minPoint.y;
-            this._origin = minPoint;
+            _this.start = minPoint;
+            _this.end = maxPoint;
+            return _this;
         }
         Object.defineProperty(LifeObject.prototype, "aliveCells", {
             get: function () { return this._aliveCells; },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(LifeObject.prototype, "width", {
-            get: function () { return this._width; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LifeObject.prototype, "height", {
-            get: function () { return this._height; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LifeObject.prototype, "origin", {
-            get: function () { return this._origin; },
-            enumerable: true,
-            configurable: true
-        });
-        LifeObject.prototype.save = function (name) {
-            window.localStorage.setItem(name, JSON.stringify(this._aliveCells));
-        };
         LifeObject.prototype.centerPos = function (pos) {
-            return pos.sub(this.origin).add(this.width / -2, this.height / -2);
+            return pos.sub(this.start).add(this.width / -2, this.height / -2);
         };
-        LifeObject.load = function (name) {
-            var ps = JSON.parse(window.localStorage.getItem(name));
-            if (ps == null)
-                throw new Error("LifeObject \"" + name + "\" not found.");
-            return new LifeObject(ps.map(function (p) { return new field_1.Position(p.x, p.y); }));
-        };
-        LifeObject.allSavedObjects = function () {
-            var os = [];
-            for (var i = 0; i < window.localStorage.length; i++)
-                os.push(window.localStorage.key(i));
-            return os;
+        LifeObject.prototype.serialize = function () {
+            return this._aliveCells.map(function (pos) { return pos.serialize(); });
         };
         LifeObject.parseLife105 = function (lifeString) {
             var aliveCells = [];
             var y = 0;
-            var origin = new field_1.Position(0, 0);
+            var origin = new utils_1.Vector(0, 0);
             for (var _i = 0, _a = lifeString.split("\n"); _i < _a.length; _i++) {
                 var line = _a[_i];
                 var res = line.match(/#P\s+(-?\d+)\s+(-?\d+)/);
                 if (res != null) {
                     y = 0;
-                    origin = new field_1.Position(parseInt(res[1]), parseInt(res[2]));
+                    origin = new utils_1.Vector(parseInt(res[1]), parseInt(res[2]));
                 }
                 if (line.substr(0, 1) == "#")
                     continue;
@@ -80,7 +62,7 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
                 for (var _b = 0, _c = line.split(""); _b < _c.length; _b++) {
                     var char = _c[_b];
                     if (char == "*")
-                        aliveCells.push(new field_1.Position(origin.x + x, origin.y + y));
+                        aliveCells.push(new utils_1.Vector(origin.x + x, origin.y + y));
                     x++;
                 }
                 y++;
@@ -96,7 +78,7 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
                 var res = line.match(/^(\d+)\s+(\d+)$/);
                 if (res == null)
                     continue;
-                aliveCells.push(new field_1.Position(parseInt(res[1]), parseInt(res[2])));
+                aliveCells.push(new utils_1.Vector(parseInt(res[1]), parseInt(res[2])));
             }
             return new LifeObject(aliveCells);
         };
@@ -106,8 +88,8 @@ define(["require", "exports", "field"], function (require, exports, field_1) {
             return LifeObject.parseLife105(lifeString);
         };
         return LifeObject;
-    }());
+    }(utils_1.Area));
     exports.default = LifeObject;
-    exports.dot = new LifeObject([new field_1.Position(0, 0)]);
+    exports.dot = new LifeObject([new utils_1.Vector(0, 0)]);
 });
 //# sourceMappingURL=lifeobject.js.map

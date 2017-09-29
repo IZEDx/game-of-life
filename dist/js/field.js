@@ -1,77 +1,6 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "utils"], function (require, exports, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Position = (function () {
-        function Position(x, y) {
-            this.x = x;
-            this.y = y;
-        }
-        Position.prototype.fitToBorders = function (width, height) {
-            var x = Math.ceil(this.x);
-            var y = Math.ceil(this.y);
-            if (x >= width)
-                x = x % width;
-            else if (x < 0)
-                x = width - (x * -1 % width);
-            if (y >= height)
-                y = y % height;
-            else if (y < 0)
-                y = height - (y * -1 % height);
-            return new Position(x, y);
-        };
-        Position.prototype.add = function (xOrPos, y) {
-            if (typeof xOrPos == "number" && y != null) {
-                return new Position(this.x + xOrPos, this.y + y);
-            }
-            else if (xOrPos instanceof Position) {
-                return new Position(this.x + xOrPos.x, this.y + xOrPos.y);
-            }
-            else {
-                return this;
-            }
-        };
-        Position.prototype.mul = function (fac) {
-            return new Position(this.x * fac, this.y * fac);
-        };
-        Position.prototype.sub = function (pos) {
-            return this.add(pos.mul(-1));
-        };
-        Position.prototype.ceil = function () {
-            return new Position(Math.ceil(this.x), Math.ceil(this.y));
-        };
-        return Position;
-    }());
-    exports.Position = Position;
-    var Area = (function () {
-        function Area(v1, v2, v3, v4) {
-            if (typeof v1 != "number" && typeof v2 != "number") {
-                this.start = v1;
-                this.end = v2;
-            }
-            else if (typeof v1 != "number" && typeof v2 == "number") {
-                this.start = v1;
-                this.end = new Position(v2, v3);
-            }
-            else if (typeof v1 == "number" && typeof v2 == "number" && typeof v3 == "number" && typeof v4 == "number") {
-                this.start = new Position(v1, v2);
-                this.end = new Position(v3, v4);
-            }
-        }
-        Area.prototype.fitToBorders = function (width, height) {
-            this.start.fitToBorders(width, height);
-            this.end.fitToBorders(width, height);
-            return this;
-        };
-        Area.prototype.forEachPos = function (cb) {
-            for (var y = this.start.y; y <= this.end.y; y++) {
-                for (var x = this.start.x; x <= this.end.y; x++) {
-                    cb(new Position(x, y));
-                }
-            }
-        };
-        return Area;
-    }());
-    exports.Area = Area;
     var Field = (function () {
         function Field(canvas, width, height) {
             if (width === void 0) { width = 0; }
@@ -126,14 +55,14 @@ define(["require", "exports"], function (require, exports) {
         Field.prototype.getNeighbours = function (pos) {
             var _this = this;
             return [
-                new Position(pos.x - 1, pos.y - 1),
-                new Position(pos.x, pos.y - 1),
-                new Position(pos.x + 1, pos.y - 1),
-                new Position(pos.x - 1, pos.y),
-                new Position(pos.x + 1, pos.y),
-                new Position(pos.x - 1, pos.y + 1),
-                new Position(pos.x, pos.y + 1),
-                new Position(pos.x + 1, pos.y + 1),
+                new utils_1.Vector(pos.x - 1, pos.y - 1),
+                new utils_1.Vector(pos.x, pos.y - 1),
+                new utils_1.Vector(pos.x + 1, pos.y - 1),
+                new utils_1.Vector(pos.x - 1, pos.y),
+                new utils_1.Vector(pos.x + 1, pos.y),
+                new utils_1.Vector(pos.x - 1, pos.y + 1),
+                new utils_1.Vector(pos.x, pos.y + 1),
+                new utils_1.Vector(pos.x + 1, pos.y + 1),
             ].map(function (p) { return p.fitToBorders(_this.width, _this.height); });
         };
         Field.prototype.countAliveNeighbours = function (pos) {
@@ -144,7 +73,7 @@ define(["require", "exports"], function (require, exports) {
             for (var x = 0; x < this.width; x++)
                 for (var y = 0; y < this.height; y++)
                     if (this.field[x][y])
-                        cb(new Position(x, y));
+                        cb(new utils_1.Vector(x, y));
         };
         Field.prototype.render = function () {
             var _this = this;
@@ -165,10 +94,10 @@ define(["require", "exports"], function (require, exports) {
             this.ctx.globalAlpha = ga;
         };
         Field.prototype.mouseEventToPosition = function (event) {
-            return new Position(Math.floor(event.pageX / this.canvas.width * this.width), Math.floor(event.pageY / this.canvas.height * this.height));
+            return new utils_1.Vector(Math.floor(event.pageX / this.canvas.width * this.width), Math.floor(event.pageY / this.canvas.height * this.height));
         };
         Field.prototype.getCenter = function () {
-            return new Position(this.width / 2, this.height / 2).ceil();
+            return new utils_1.Vector(this.width / 2, this.height / 2).ceil();
         };
         return Field;
     }());

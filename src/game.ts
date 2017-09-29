@@ -1,4 +1,4 @@
-import Field, {Position} from 'field';
+import Field from 'field';
 import {nop} from 'utils';
 
 

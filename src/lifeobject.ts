@@ -1,67 +1,47 @@
-import Field, {Position} from 'field';
+import {Vector, Area} from 'utils';
 
-
-export default class LifeObject{
-    private _aliveCells : Position[] = [];
-    private _width : number = 0;
-    private _height : number = 0;
-    private _origin : Position = new Position(0,0);
+export default class LifeObject extends Area{
+    private _aliveCells : Vector[] = [];
 
     get aliveCells(){ return this._aliveCells; }
-    get width(){ return this._width; }
-    get height(){ return this._height; }
-    get origin(){ return this._origin; }
 
-    constructor(aliveCells : Position[]){
-        let minPoint = new Position(999,999);
-        let maxPoint = new Position(0,0);
+    constructor(aliveCells : Vector[]){
+        super(0,0,0,0);
+        let minPoint = new Vector(999,999);
+        let maxPoint = new Vector(0,0);
         for(let pos of aliveCells){
             if(pos.x < minPoint.x) minPoint.x = pos.x;
             if(pos.x > maxPoint.x) maxPoint.x = pos.x;
             if(pos.y < minPoint.y) minPoint.y = pos.y;
             if(pos.y > maxPoint.y) maxPoint.y = pos.y;
-            this._aliveCells.push(new Position(pos.x, pos.y));
+            this._aliveCells.push(new Vector(pos.x, pos.y));
         }
-        this._width = maxPoint.x - minPoint.x;
-        this._height = maxPoint.y - minPoint.y;
-        this._origin = minPoint;
+        this.start = minPoint;
+        this.end = maxPoint;
     }
 
-    save(name: string){
-        window.localStorage.setItem(name, JSON.stringify(this._aliveCells));
+    centerPos(pos : Vector) : Vector{
+        return pos.sub(this.start).add(this.width/-2, this.height/-2)
     }
 
-    centerPos(pos : Position) : Position{
-        return pos.sub(this.origin).add(this.width/-2, this.height/-2)
-    }
-
-    static load(name: string) : LifeObject{
-        let ps = JSON.parse(window.localStorage.getItem(name));
-        if(ps == null) throw new Error("LifeObject \"" + name + "\" not found.");
-        return new LifeObject(ps.map(p => new Position(p.x, p.y)));
-    }
-
-    static allSavedObjects() : string[]{
-        let os : string[] = [];
-        for(let i = 0; i < window.localStorage.length; i++)
-            os.push(window.localStorage.key(i));
-        return os;
+    serialize() : Object|Array<any>{
+        return this._aliveCells.map(pos => pos.serialize());
     }
 
     static parseLife105(lifeString : string) : LifeObject{
-        let aliveCells : Position[] = [];
+        let aliveCells : Vector[] = [];
         let y = 0;
-        let origin = new Position(0,0);
+        let origin = new Vector(0,0);
         for(let line of lifeString.split("\n")){
             let res = line.match(/#P\s+(-?\d+)\s+(-?\d+)/);
             if(res != null) {
                 y = 0;
-                origin = new Position(parseInt(res[1]), parseInt(res[2]));
+                origin = new Vector(parseInt(res[1]), parseInt(res[2]));
             }
             if(line.substr(0,1) == "#") continue;
             let x = 0;
             for(let char of line.split("")){
-                if(char == "*") aliveCells.push(new Position(origin.x + x, origin.y + y));
+                if(char == "*") aliveCells.push(new Vector(origin.x + x, origin.y + y));
                 x++;
             }
             y++;
@@ -71,12 +51,12 @@ export default class LifeObject{
     }
 
     static parseLife106(lifeString : string) : LifeObject{
-        let aliveCells : Position[] = [];
+        let aliveCells : Vector[] = [];
         for(let line of lifeString.split("\n")){
             if(line.substr(0,1) == "#") continue;
             let res = line.match(/^(\d+)\s+(\d+)$/);
             if(res == null) continue;
-            aliveCells.push(new Position(parseInt(res[1]), parseInt(res[2])));
+            aliveCells.push(new Vector(parseInt(res[1]), parseInt(res[2])));
         }
 
         return new LifeObject(aliveCells);
@@ -88,4 +68,4 @@ export default class LifeObject{
     }
 }
 
-export const dot = new LifeObject([new Position(0,0)]);
+export const dot = new LifeObject([new Vector(0,0)]);
