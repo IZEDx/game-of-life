@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define(["require", "exports", "utils"], function (require, exports, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -13,6 +23,9 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
             this.ctx = canvas.getContext("2d");
             this.setSize(width, height);
         }
+        Field.prototype.getSize = function () {
+            return { width: this.width, height: this.height };
+        };
         Field.prototype.setSize = function (width, height) {
             this.width = width;
             this.height = height;
@@ -102,5 +115,40 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
         return Field;
     }());
     exports.default = Field;
+    var ListField = (function (_super) {
+        __extends(ListField, _super);
+        function ListField(canvas, width, height) {
+            if (width === void 0) { width = 0; }
+            if (height === void 0) { height = 0; }
+            var _this = _super.call(this, canvas, width, height) || this;
+            _this.list = [];
+            return _this;
+        }
+        ListField.prototype.resetField = function () {
+            this.list = [];
+        };
+        ListField.prototype.setAlive = function (pos, alive) {
+            if (alive === void 0) { alive = true; }
+            var size = this.getSize();
+            pos = pos.fitToBorders(size.width, size.height);
+            var idx = this.list.indexOf(pos);
+            if (alive && idx == -1) {
+                this.list.push(pos);
+            }
+            else if (!alive && idx >= 0) {
+                this.list.splice(idx, idx);
+            }
+        };
+        ListField.prototype.isAlive = function (pos) {
+            var size = this.getSize();
+            pos = pos.fitToBorders(size.width, size.height);
+            return this.list.indexOf(pos) >= 0;
+        };
+        ListField.prototype.forEachAlive = function (fn) {
+            this.list.forEach(function (pos) { return fn(pos); });
+        };
+        return ListField;
+    }(Field));
+    exports.ListField = ListField;
 });
 //# sourceMappingURL=field.js.map

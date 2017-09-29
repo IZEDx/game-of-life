@@ -28,9 +28,17 @@ export default class Field{
     }
 
     /**
-     * Sets the size of the grid
-     * @param {number} width Width of the grid
-     * @param {number} height Height of the grid
+     * Gets the size of the grid.
+     * @returns {{width: number, height: number}}
+     */
+    getSize() : {width : number, height : number}{
+        return {width : this.width, height : this.height};
+    }
+
+    /**
+     * Sets the size of the grid.
+     * @param {number} width Width of the grid.
+     * @param {number} height Height of the grid.
      */
     setSize(width : number, height : number){
         this.width = width;
@@ -182,3 +190,59 @@ export default class Field{
 }
 
 
+export class ListField extends Field{
+    private list : Vector[] = [];
+
+    /**
+     *
+     * @param {HTMLCanvasElement} canvas Canvas used to draw the grid on.
+     * @param {number} [width] Width of the grid in units.
+     * @param {number} [height] Height of the grid in units.
+     */
+    constructor(canvas : HTMLCanvasElement, width : number = 0, height : number = 0){
+        super(canvas, width, height);
+    }
+
+    /**
+     * Resets the field.
+     */
+    resetField(){
+        this.list = [];
+    }
+
+    /**
+     * Sets the given position alive or not.
+     * @param {Vector} pos Position to set.
+     * @param {boolean} [alive] Alive or dead?
+     */
+    setAlive(pos : Vector, alive : boolean = true){
+        let size = this.getSize();
+        pos = pos.fitToBorders(size.width, size.height);
+        let idx = this.list.indexOf(pos);
+        if(alive && idx == -1){          // Add to list
+            this.list.push(pos);
+        }else if(!alive && idx >= 0){    // Delete from list
+            this.list.splice(idx,idx);
+        }
+    }
+
+    /**
+     * Checks if the cell at pos is alive.
+     * @param {Vector} pos Position to check.
+     * @returns {boolean} Is it alive?
+     */
+    isAlive(pos : Vector) : boolean{
+        let size = this.getSize();
+        pos = pos.fitToBorders(size.width, size.height);
+        return this.list.indexOf(pos) >= 0;
+    }
+
+
+    /**
+     * Calls fn for each alive position in the field.
+     * @param {(pos : Vector) => void} fn
+     */
+    forEachAlive(fn : (pos : Vector) => void){
+        this.list.forEach(pos => fn(pos));
+    }
+}
