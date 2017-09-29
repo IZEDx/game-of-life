@@ -40,15 +40,14 @@ define(["require", "exports", "jquery", "lifeobject", "utils", "field"], functio
         function ObjectManager(canvas, game, listElementSelector) {
             this.selectedObject = lifeobject_1.dot;
             this.drawMode = false;
-            this.canvas = canvas;
             this.game = game;
             this.listElement = $(listElementSelector);
-            this.reloadButtons();
+            this.reloadEntries();
             this.importObject("Dot", lifeobject_1.dot);
         }
-        ObjectManager.prototype.reloadButtons = function () {
+        ObjectManager.prototype.reloadEntries = function () {
             var _this = this;
-            ObjectManager.allSavedObjects()
+            ObjectManager.allStoredObjects()
                 .filter(function (name) { return _this.listElement.children("[ref=\"" + name + "\"]").length == 0; })
                 .forEach(function (name) {
                 _this.listElement.append("<button class=\"btn object\" ref=\"" + name + "\"><canvas class=\"preview\"></canvas>" + name + "</button>");
@@ -102,7 +101,7 @@ define(["require", "exports", "jquery", "lifeobject", "utils", "field"], functio
             this.game.ghostField.resetField();
             this.game.render();
         };
-        ObjectManager.allSavedObjects = function () {
+        ObjectManager.allStoredObjects = function () {
             var os = [];
             for (var i = 0; i < window.localStorage.length; i++)
                 os.push(window.localStorage.key(i));
@@ -119,7 +118,7 @@ define(["require", "exports", "jquery", "lifeobject", "utils", "field"], functio
         };
         ObjectManager.prototype.importObject = function (name, obj) {
             ObjectManager.saveToStorage(name, obj);
-            this.reloadButtons();
+            this.reloadEntries();
         };
         ObjectManager.prototype.importFile = function (name, file) {
             return __awaiter(this, void 0, void 0, function () { var _a, _b, _c, _d; return __generator(this, function (_e) {
