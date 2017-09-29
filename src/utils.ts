@@ -47,7 +47,7 @@ export function checkForModals(){
 export class AspectRatio {
     /**
      * Calculates the height of the window by using the width and the aspect ratio.
-     * @param width {number} Width to get height for.
+     * @param {number} width Width to get height for.
      * @returns {number} Corresponding height.
      */
     static heightFromWidth(width : number){
@@ -55,14 +55,13 @@ export class AspectRatio {
     }
     /**
      * Calculates the width of the window by using the height and the aspect ratio.
-     * @param height {number} Height to get width for.
+     * @param {number} height Height to get width for.
      * @returns {number} Corresponding width.
      */
     static widthFromHeight(height : number){
         return Math.round(window.innerWidth / window.innerHeight * height);
     }
 }
-
 
 /**
  * Vector class to hold x,y and calculate with them.
@@ -75,8 +74,8 @@ export class Vector{
     /**
      * Creates a Vector
      * @constructor
-     * @param x {number} x-coordinate
-     * @param y {number} y-coordinate
+     * @param {number} x x-coordinate
+     * @param {number} y y-coordinate
      */
     constructor(x : number, y : number){
         this.x = x;
@@ -98,8 +97,8 @@ export class Vector{
      * Fits the Vector into the given width and height.
      * If either is exceeded or either coordinate is negative, the vector will be re-positioned to the opposite side,
      * until it fits inside the given borders.
-     * @param width
-     * @param height
+     * @param {number} width
+     * @param {number} height
      * @returns {Vector}
      */
     fitToBorders(width : number, height : number) : Vector{
@@ -117,8 +116,8 @@ export class Vector{
 
     /**
      * Adds either x-,y-coordinates or a Vector to this Vector and returns the sum Vector.
-     * @param xOrVec {number|Vector} x-coordinate or vector to add.
-     * @param y {number?} y-coordinate to add, if first parameter was the x-coordinate.
+     * @param {number|Vector} xOrVec x-coordinate or vector to add.
+     * @param {number} [y] y-coordinate to add, if first parameter was the x-coordinate.
      * @returns {Vector} Resulting Vector.
      */
     add(xOrVec : number|Vector, y? : number) : Vector{
@@ -133,7 +132,7 @@ export class Vector{
 
     /**
      * Multiplies the Vector by a given factor and returns the result.
-     * @param fac Factor to multiply the Vector with.
+     * @param {number} fac Factor to multiply the Vector with.
      * @returns {Vector} Resulting Vector.
      */
     mul(fac : number){
@@ -142,7 +141,7 @@ export class Vector{
 
     /**
      * Subtracts one Vector from the other and returns the result.
-     * @param vec Vector to be substracted.
+     * @param {Vector} vec Vector to be substracted.
      * @returns {Vector} Resulting Vector.
      */
     sub(vec : Vector){
@@ -183,10 +182,10 @@ export class Area{
 
     /**
      * @constructor
-     * @param v1 {number|Vector} Either x1 or v1.
-     * @param v2 {number|Vector} Either y1, x2 or v2.
-     * @param v3? {number} Either x2 or y2
-     * @param v4? {number} y2
+     * @param {number|Vector} v1 Either x1 or v1.
+     * @param {number|Vector} v2 Either y1, x2 or v2.
+     * @param {number} [v3] Either x2 or y2
+     * @param {number} [v4] y2
      */
     constructor(v1 : number|Vector, v2 : number|Vector, v3? : number, v4?: number){
         if(typeof v1 != "number" && typeof v2 != "number"){
@@ -226,8 +225,8 @@ export class Area{
     /**
      * Fits the area to the given width and height
      * @see {@link Vector.serialize}
-     * @param width
-     * @param height
+     * @param {number} width
+     * @param {number} height
      * @returns {Area}
      */
     fitToBorders(width : number, height : number) : Area{
@@ -238,7 +237,7 @@ export class Area{
 
     /**
      * Calls fn for each Position in the Area
-     * @param fn {(pos : Vector) => void}
+     * @param {(pos : Vector) => void} fn
      */
     forEachPos(fn : (pos : Vector) => void){
         for(let y = this._start.y; y <= this._end.y; y++){

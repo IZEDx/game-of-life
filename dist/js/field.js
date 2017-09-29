@@ -69,11 +69,11 @@ define(["require", "exports", "utils"], function (require, exports, utils_1) {
             var _this = this;
             return this.getNeighbours(pos).filter(function (pos) { return _this.isAlive(pos); }).length;
         };
-        Field.prototype.forEachAlive = function (cb) {
+        Field.prototype.forEachAlive = function (fn) {
             for (var x = 0; x < this.width; x++)
                 for (var y = 0; y < this.height; y++)
                     if (this.field[x][y])
-                        cb(new utils_1.Vector(x, y));
+                        fn(new utils_1.Vector(x, y));
         };
         Field.prototype.render = function () {
             var _this = this;
