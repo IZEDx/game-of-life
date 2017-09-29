@@ -1,4 +1,3 @@
 .idea/*
-*.map
 dist/objects/lifep
 node_modules
