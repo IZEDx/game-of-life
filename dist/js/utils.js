@@ -15,28 +15,6 @@ define(["require", "exports"], function (require, exports) {
         });
     }
     exports.get = get;
-    function checkForModals() {
-        $(".modal").each(function () {
-            var modal = $(this);
-            modal.children(".content").children(".header").children(".modal-close").on("click", function () { return modal.hide(); });
-        });
-        $(".modal-toggle").each(function () {
-            var btn = $(this);
-            btn.on("click", function () {
-                var hidden = $(btn.attr("ref")).css('display') == "none";
-                $(".modal").each(function () {
-                    $(this).hide();
-                });
-                if (hidden) {
-                    $(btn.attr("ref")).show();
-                }
-                else {
-                    $(btn.attr("ref")).hide();
-                }
-            });
-        });
-    }
-    exports.checkForModals = checkForModals;
     var AspectRatio = (function () {
         function AspectRatio() {
         }

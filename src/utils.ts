@@ -20,27 +20,6 @@ export function get(url : string){
     });
 }
 
-export function checkForModals(){
-    $(".modal").each(function(){
-        let modal = $(this);
-        modal.children(".content").children(".header").children(".modal-close").on("click", () => modal.hide());
-    });
-    $(".modal-toggle").each(function(){
-        let btn = $(this);
-        btn.on("click", () => {
-            let hidden = $(btn.attr("ref")).css('display') == "none";
-            $(".modal").each(function(){
-                $(this).hide();
-            });
-            if(hidden){
-                $(btn.attr("ref")).show();
-            }else{
-                $(btn.attr("ref")).hide();
-            }
-        });
-    });
-}
-
 /**
  * Holds methods for easier calculation with the aspect ratio.
  */
