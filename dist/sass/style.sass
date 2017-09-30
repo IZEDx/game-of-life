@@ -72,10 +72,11 @@ html, body
 
 
 #objectList
+  order: 1
   display: flex
   flex-direction: column
   align-items: stretch
-  min-height: 100%
+  flex: 1 0
   .object
     width: 100%
     height: 50px
@@ -92,6 +93,36 @@ html, body
       opacity: 1
       color: #ffffff
       text-shadow: 0 0 4px white
+
+#addObjectModal .body
+  display: flex
+  flex-direction: column
+  .textinput
+    background: none
+    outline: none
+    border: none
+    color: #fff
+    font-size: 15px
+    padding: 5px
+    opacity: 0.5
+
+  #name
+    order: 1
+    flex: 0 0 40px
+
+  #text
+    order: 2
+    flex: 1 0 300px
+    resize: none
+    box-shadow: inset 0px 0px 50px -10px rgba(255,255,255,0.15)
+    background-color: rgba(10,10,15,0.90)
+    border: solid 1px rgba(255,255,255,0.1)
+
+  #importButton
+    order: 3
+    flex: 0 0 40px
+    width: 100px
+    align-self: flex-end
 
 
 .modal
@@ -132,6 +163,8 @@ html, body
       padding: 10px
       opacity: 0.7
       text-shadow: 0 0 1px white
+      display: flex
+      flex-direction: column
       overflow-x: hidden
       overflow-y: auto
     .modal-close

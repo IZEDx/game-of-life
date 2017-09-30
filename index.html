@@ -30,23 +30,31 @@
     <div class="modal" id="addObjectModal">
         <div class="content">
             <div class="header">
-                <div class="title">Save Object</div>
+                <div class="title">Import Object</div>
                 <button class="btn modal-close"><i class="fa fa-times" aria-hidden="true"></i></button>
             </div>
             <div class="body">
-                Test Test Test blablabla
+                <input class="textinput" value="" id="name" placeholder="Name to store as" />
+                <textarea class="textinput" id="text"></textarea>
+                <button class="btn" id="importButton">Import</button>
             </div>
         </div>
     </div>
     <div class="modal" id="objectManagerModal">
         <div class="content sidebar">
             <div class="header noselect">
-                <div class="title">Object Manager</div>
+                <div class="title">Spawn Object</div>
                 <button class="btn modal-close"><i class="fa fa-times" aria-hidden="true"></i></button>
             </div>
             <div class="body">
                 <div id="objectList">
                 </div>
+                <!--<div id="dropzone">
+                    <div class ="label noselect">
+                        Drop, Link or Paste Life 1.05/6 file.
+                    </div>
+                    <textarea class="textinput"></textarea>
+                </div>-->
             </div>
         </div>
     </div>
