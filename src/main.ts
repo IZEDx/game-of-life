@@ -65,6 +65,8 @@ el.singleDotButton  .on("click", () => objectManager.switchTo(dot));
 el.importButton     .on("click", () => {
     if(el.nameInput.val().toString() == "" || el.textInput.val().toString() == "") return alert("No field can be empty.");
     objectManager.importString(el.nameInput.val().toString(), el.textInput.val().toString());
+    $("#addObjectModal").hide();
+    $("#objectManagerModal").hide();
 });
 
 // Initialize Modal functionality
