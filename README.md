@@ -1,4 +1,4 @@
-# game-of-life
+# Conway's Game of Life
 TypeScript implementation of Conway's Game of Life
 
 # Idea
