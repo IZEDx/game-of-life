@@ -1,7 +1,9 @@
 import Field from 'field';
 import {nop} from 'utils';
 
-
+/**
+ * Game class handling the game mechanics
+ */
 export default class Game{
     private _field : Field;
     private _ghostField : Field;
@@ -15,12 +17,42 @@ export default class Game{
     private _speed = 100;
     private _tickCounter = 0;
 
+    /**
+     * Gets called when the game is started or stopped.
+     * @type {(running : boolean) => void}
+     */
     onStateChange : (running : boolean) => void = nop;
+
+    /**
+     * Gets called when the generation updates.
+     * @type {(generation : number) => void}
+     */
     onGenerationChange : (generation : number) => void = nop;
+
+    /**
+     * Gets called when the population updates.
+     * @type {(population : number) => void}
+     */
     onPopulationChange : (population : number) => void = nop;
+
+    /**
+     * Gets called when the speed updates.
+     * @type {(speed : number) => void}
+     */
     onSpeedChange : (speed : number) => void = nop;
+
+    /**
+     * Gets called when the rules change.
+     * @type {(rule : string) => void}
+     */
     onRuleChange : (rule : string) => void = nop;
 
+    /**
+     * Creates a new game instance.
+     * @param {HTMLCanvasElement} canvas Canvas used to draw the game on.
+     * @param {number} [width] Width of the field grid in units.
+     * @param {number} [height] Height of the field grid in units.
+     */
     constructor(canvas : HTMLCanvasElement, width : number = 0, height : number = 0){
         this._field = new Field(canvas, width, height);
         this._ghostField = new Field(canvas, width, height);
@@ -30,6 +62,10 @@ export default class Game{
         this.speed = 25;
     }
 
+    /**
+     * Game of Life Rule in S/B notation.
+     * @param {string} sbrule
+     */
     set rule(sbrule : string){
         let res = /^(\d*)\/(\d*)$/g.exec(sbrule);
         if(res == null) return;
@@ -38,10 +74,18 @@ export default class Game{
 
         this.onRuleChange(sbrule);
     }
+
+    /**
+     * Current Rule in S/B notation.
+     * @returns {string}
+     */
     get rule(){
         return this._survive.join() + "/" + this._born.join();
     }
 
+    /**
+     * Called every 10ms when the game is running
+     */
     tick(){
         this._tickCounter++;
         if(this._tickCounter % this._interval == 0){
@@ -49,6 +93,10 @@ export default class Game{
         }
     }
 
+    /**
+     * Starts/stops the game.
+     * @param run
+     */
     set running(run : boolean){
         this._running = run;
         this.onStateChange(run);
@@ -60,46 +108,86 @@ export default class Game{
             clearInterval(this._timer);
         }
     }
+
+    /**
+     * If the game is running.
+     * @returns {boolean}
+     */
     get running() : boolean{
         return this._running;
     }
 
-
+    /**
+     * Sets the generation
+     * @param gen
+     */
     set generation(gen : number){
         this._generation = gen;
         this.onGenerationChange(gen);
     }
+
+    /**
+     * Gets the generation
+     * @returns {number}
+     */
     get generation() : number{
         return this._generation;
     }
 
-
+    /**
+     * Sets the population
+     * @param pop
+     */
     set population(pop : number){
         this._population = pop;
         this.onPopulationChange(pop);
     }
+
+    /**
+     * Gets the population
+     * @returns {number}
+     */
     get population() : number{
         return this._population;
     }
 
-
+    /**
+     * Sets the speed
+     * @param speed
+     */
     set speed(speed : number){
         this._speed = speed;
         this._interval = Math.round(100 / Math.sqrt(this.speed)) - 9;
         this.onSpeedChange(speed);
     }
+
+    /**
+     * Gets the speed
+     * @returns {number}
+     */
     get speed() : number{
         return this._speed;
     }
 
-
+    /**
+     * Gets the field
+     * @returns {Field}
+     */
     get field() : Field{
         return this._field;
     }
+
+    /**
+     * Gets the ghost field
+     * @returns {Field}
+     */
     get ghostField() : Field{
         return this._ghostField;
     }
 
+    /**
+     * Inverts the rules
+     */
     invertRule(){
         let survive = [];
         let born = [];
@@ -113,6 +201,9 @@ export default class Game{
         this.onRuleChange(this._survive.join("")+"/"+this._born.join(""));
     }
 
+    /**
+     * Next Generation
+     */
     next(){
         let cellsToToggle = [];
         let pop = 0;
@@ -138,12 +229,17 @@ export default class Game{
         this.render();
     }
 
-
+    /**
+     * Renders the game
+     */
     render(){
         this._field.render();
         this._ghostField.render();
     }
 
+    /**
+     * Resets the game
+     */
     reset(){
         this.generation = 0;
         this.population = 0;

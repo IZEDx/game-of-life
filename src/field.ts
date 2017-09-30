@@ -16,7 +16,7 @@ export default class Field{
     opacity : number = 1.0;
 
     /**
-     *
+     * Creates a new field.
      * @param {HTMLCanvasElement} canvas Canvas used to draw the grid on.
      * @param {number} [width] Width of the grid in units.
      * @param {number} [height] Height of the grid in units.
