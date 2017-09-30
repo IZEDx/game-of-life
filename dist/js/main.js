@@ -44,6 +44,8 @@ define(["require", "exports", "game", "utils", "jquery", "object-manager", "life
         if (el.nameInput.val().toString() == "" || el.textInput.val().toString() == "")
             return alert("No field can be empty.");
         objectManager.importString(el.nameInput.val().toString(), el.textInput.val().toString());
+        $("#addObjectModal").hide();
+        $("#objectManagerModal").hide();
     });
     $(".modal").each(function () {
         var modal = $(this);
