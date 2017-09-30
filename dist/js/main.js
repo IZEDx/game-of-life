@@ -5,7 +5,7 @@ define(["require", "exports", "game", "utils", "jquery", "object-manager", "life
     var height = utils_1.AspectRatio.heightFromWidth(width);
     var canvas = document.getElementById("canvas");
     var game = new game_1.default(canvas, width, height);
-    var objectManager = new object_manager_1.default(canvas, game, "#objectList");
+    var objectManager = new object_manager_1.default(game, "#objectList");
     window["gameOfLife"] = game;
     window["objectManager"] = objectManager;
     canvas.addEventListener('click', objectManager.canvasClick.bind(objectManager), false);
@@ -20,21 +20,55 @@ define(["require", "exports", "game", "utils", "jquery", "object-manager", "life
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas, false);
-    game.onPopulationChange = function (pop) { return $("#population").text(pop.toString()); };
-    game.onGenerationChange = function (gen) { return $("#generation").text(gen.toString()); };
-    game.onStateChange = function (run) { return $("#startStopButton").html("<i class=\"fa fa-" + (run ? "pause" : "play") + "\" aria-hidden=\"true\"></i>"); };
-    $("#startStopButton").on("click", function () { return game.running = !game.running; });
-    $("#nextStepButton").on("click", function () { return game.next(); });
-    $("#resetButton").on("click", function () { return game.reset(); });
-    $("#speedSlider").on("input", function () { game.speed = $(this).val(); });
-    $("#singleDotButton").on("click", function () { return objectManager.switchTo(lifeobject_1.dot); });
-    utils_1.checkForModals();
-    utils_1.get("./dist/objects/startscreen.life").then(function (str) {
-        var obj = lifeobject_1.default.parseLife(str);
-        game.ghostField.resetField();
-        game.ghostField.setLifeObjectAlive(obj, obj.centerPos(game.ghostField.getCenter()));
-        game.field.setLifeObjectAlive(obj, obj.centerPos(game.ghostField.getCenter()));
-        game.render();
+    var el = {
+        startStopButton: $("#startStopButton"),
+        nextStepButton: $("#nextStepButton"),
+        resetButton: $("#resetButton"),
+        singleDotButton: $("#singleDotButton"),
+        speedSlider: $("#speedSlider"),
+        textInput: $("#text"),
+        nameInput: $("#name"),
+        importButton: $("#importButton"),
+        population: $("#population"),
+        generation: $("#generation")
+    };
+    game.onPopulationChange = function (pop) { return el.population.text(pop.toString()); };
+    game.onGenerationChange = function (gen) { return el.generation.text(gen.toString()); };
+    game.onStateChange = function (run) { return el.startStopButton.html("<i class=\"fa fa-" + (run ? "pause" : "play") + "\" aria-hidden=\"true\"></i>"); };
+    el.startStopButton.on("click", function () { return game.running = !game.running; });
+    el.nextStepButton.on("click", function () { return game.next(); });
+    el.resetButton.on("click", function () { return game.reset(); });
+    el.speedSlider.on("input", function () { game.speed = $(this).val(); });
+    el.singleDotButton.on("click", function () { return objectManager.switchTo(lifeobject_1.dot); });
+    el.importButton.on("click", function () {
+        if (el.nameInput.val().toString() == "" || el.textInput.val().toString() == "")
+            return alert("No field can be empty.");
+        objectManager.importString(el.nameInput.val().toString(), el.textInput.val().toString());
     });
+    $(".modal").each(function () {
+        var modal = $(this);
+        modal.children(".content").children(".header").children(".modal-close").on("click", function () { return modal.hide(); });
+    });
+    $(".modal-toggle").each(function () {
+        var btn = $(this);
+        btn.on("click", function () {
+            var hidden = $(btn.attr("ref")).css('display') == "none";
+            $(".modal").each(function () {
+                $(this).hide();
+            });
+            if (hidden) {
+                $(btn.attr("ref")).show();
+            }
+            else {
+                $(btn.attr("ref")).hide();
+            }
+        });
+    });
+    var startScreenCode = "\n************************************************\n..................................................\n.******...********...******...*******...********..\n**....**.....**.....**....**..**....**.....**.....\n**...........**.....**....**..**....**.....**.....\n.******......**.....********..*******......**.....\n......**.....**.....**....**..**....**.....**.....\n**....**.....**.....**....**..**....**.....**.....\n.******......**.....**....**..**....**.....**.....\n..................................................\n************************************************\n ";
+    var startScreen = lifeobject_1.default.parseLife(startScreenCode);
+    game.ghostField.resetField();
+    game.ghostField.setLifeObjectAlive(startScreen, startScreen.centerPos(game.ghostField.getCenter()));
+    game.field.setLifeObjectAlive(startScreen, startScreen.centerPos(game.ghostField.getCenter()));
+    game.render();
 });
 //# sourceMappingURL=main.js.map

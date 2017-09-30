@@ -19,7 +19,7 @@ export default class ObjectManager{
      * @param {Game} game Game to interact with.
      * @param {string} listElementSelector JQuery-Selector for Object Browser list.
      */
-    constructor(canvas : HTMLCanvasElement, game : Game, listElementSelector : string){
+    constructor(game : Game, listElementSelector : string){
         this.game = game;
         this.listElement = $(listElementSelector);
         this.reloadEntries();
@@ -33,12 +33,12 @@ export default class ObjectManager{
         ObjectManager.allStoredObjects()
             .filter(name => this.listElement.children(`[ref="${name}"]`).length == 0)
             .forEach(name => {
-                this.listElement.append(`<button class="btn object" ref="${name}"><canvas class="preview"></canvas>${name}</button>`)
+                this.listElement.append(`<button class="btn object" ref="${name}"><!--<canvas class="preview"></canvas>-->${name}</button>`)
             });
 
         let mgr = this;
         this.listElement.children().on("click", function() { mgr.switchTo($(this).attr('ref')) });
-        this.listElement.children().each(function(){
+        /*this.listElement.children().each(function(){
             let btn = $(this);
             let obj = ObjectManager.loadFromStorage(btn.attr("ref"));
             let canvas : HTMLCanvasElement = btn.children(".preview").get(0) as HTMLCanvasElement;
@@ -47,7 +47,7 @@ export default class ObjectManager{
             field.toggleLifeObject(obj, obj.start);
             field.renderBackground = false;
             field.render();
-        });
+        });*/
     }
 
     /**

@@ -33,11 +33,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "jquery", "lifeobject", "utils", "field"], function (require, exports, $, lifeobject_1, utils_1, field_1) {
+define(["require", "exports", "jquery", "lifeobject", "utils"], function (require, exports, $, lifeobject_1, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ObjectManager = (function () {
-        function ObjectManager(canvas, game, listElementSelector) {
+        function ObjectManager(game, listElementSelector) {
             this.selectedObject = lifeobject_1.dot;
             this.drawMode = false;
             this.game = game;
@@ -50,20 +50,10 @@ define(["require", "exports", "jquery", "lifeobject", "utils", "field"], functio
             ObjectManager.allStoredObjects()
                 .filter(function (name) { return _this.listElement.children("[ref=\"" + name + "\"]").length == 0; })
                 .forEach(function (name) {
-                _this.listElement.append("<button class=\"btn object\" ref=\"" + name + "\"><canvas class=\"preview\"></canvas>" + name + "</button>");
+                _this.listElement.append("<button class=\"btn object\" ref=\"" + name + "\"><!--<canvas class=\"preview\"></canvas>-->" + name + "</button>");
             });
             var mgr = this;
             this.listElement.children().on("click", function () { mgr.switchTo($(this).attr('ref')); });
-            this.listElement.children().each(function () {
-                var btn = $(this);
-                var obj = ObjectManager.loadFromStorage(btn.attr("ref"));
-                var canvas = btn.children(".preview").get(0);
-                console.log(obj.width, obj.height);
-                var field = new field_1.default(canvas, obj.width, obj.height);
-                field.toggleLifeObject(obj, obj.start);
-                field.renderBackground = false;
-                field.render();
-            });
         };
         ObjectManager.prototype.canvasClick = function (event) {
         };
